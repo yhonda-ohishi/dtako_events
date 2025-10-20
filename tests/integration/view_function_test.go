@@ -47,8 +47,8 @@ func TestGetRowDetailFunction(t *testing.T) {
 	// 一番星DBは省略（テスト用）
 	var ichibanRepo repository.IchibanRepository
 
-	// サービス初期化
-	dtakoRowService := service.NewDtakoRowService(rowRepo, eventRepo, ichibanRepo, fuelTankaRepo)
+	// サービス初期化（desktop-serverなし）
+	dtakoRowService := service.NewDtakoRowService(rowRepo, eventRepo, ichibanRepo, fuelTankaRepo, nil)
 
 	// テスト用の運行IDを取得（最新のdtako_row）
 	type RowID struct {
@@ -234,8 +234,8 @@ func TestGetRowDetailMultiple(t *testing.T) {
 	eventRepo := repository.NewDtakoEventRepository(db)
 	fuelTankaRepo := repository.NewFuelTankaRepository(db)
 
-	// サービス初期化
-	dtakoRowService := service.NewDtakoRowService(rowRepo, eventRepo, nil, fuelTankaRepo)
+	// サービス初期化（desktop-serverなし）
+	dtakoRowService := service.NewDtakoRowService(rowRepo, eventRepo, nil, fuelTankaRepo, nil)
 
 	// 最新5件の運行IDを取得
 	type RowID struct {

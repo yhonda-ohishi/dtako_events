@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
+	"github.com/yhonda-ohishi/dtako_events/internal/client"
 	"github.com/yhonda-ohishi/dtako_events/internal/config"
 	"github.com/yhonda-ohishi/dtako_events/internal/repository"
 	"github.com/yhonda-ohishi/dtako_events/internal/service"
@@ -51,8 +52,31 @@ func main() {
 		ichibanRepo = repository.NewIchibanRepository(ichibanDB)
 	}
 
+	// desktop-server接続
+	desktopServerHost := os.Getenv("DESKTOP_SERVER_HOST")
+	if desktopServerHost == "" {
+		desktopServerHost = "localhost"
+	}
+	desktopServerPort := os.Getenv("DESKTOP_SERVER_PORT")
+	if desktopServerPort == "" {
+		desktopServerPort = "50051"
+	}
+	desktopServerAddr := fmt.Sprintf("%s:%s", desktopServerHost, desktopServerPort)
+
+	var desktopServerRepo *repository.DesktopServerRepository
+	dsClient, err := client.NewDesktopServerClient(desktopServerAddr)
+	if err != nil {
+		log.Printf("Warning: Failed to connect to desktop-server at %s: %v", desktopServerAddr, err)
+		log.Println("Running without desktop-server integration (will use direct DB access)")
+		desktopServerRepo = nil
+	} else {
+		log.Printf("Connected to desktop-server at %s", desktopServerAddr)
+		desktopServerRepo = repository.NewDesktopServerRepository(dsClient)
+		defer dsClient.Close()
+	}
+
 	// サービス初期化
-	dtakoRowService := service.NewDtakoRowService(rowRepo, eventRepo, ichibanRepo, fuelTankaRepo)
+	dtakoRowService := service.NewDtakoRowService(rowRepo, eventRepo, ichibanRepo, fuelTankaRepo, desktopServerRepo)
 
 	// gRPCサーバー作成
 	grpcServer := grpc.NewServer()

@@ -14,10 +14,11 @@ import (
 // DtakoRowService 運行データサービス
 type DtakoRowService struct {
 	pb.UnimplementedDtakoRowServiceServer
-	rowRepo      repository.DtakoRowRepository
-	eventRepo    repository.DtakoEventRepository
-	ichibanRepo  repository.IchibanRepository
-	fuelTankaRepo repository.FuelTankaRepository
+	rowRepo         repository.DtakoRowRepository
+	eventRepo       repository.DtakoEventRepository
+	ichibanRepo     repository.IchibanRepository
+	fuelTankaRepo   repository.FuelTankaRepository
+	desktopServerRepo *repository.DesktopServerRepository
 }
 
 // NewDtakoRowService サービスを作成
@@ -26,12 +27,14 @@ func NewDtakoRowService(
 	eventRepo repository.DtakoEventRepository,
 	ichibanRepo repository.IchibanRepository,
 	fuelTankaRepo repository.FuelTankaRepository,
+	desktopServerRepo *repository.DesktopServerRepository,
 ) *DtakoRowService {
 	return &DtakoRowService{
-		rowRepo:       rowRepo,
-		eventRepo:     eventRepo,
-		ichibanRepo:   ichibanRepo,
-		fuelTankaRepo: fuelTankaRepo,
+		rowRepo:           rowRepo,
+		eventRepo:         eventRepo,
+		ichibanRepo:       ichibanRepo,
+		fuelTankaRepo:     fuelTankaRepo,
+		desktopServerRepo: desktopServerRepo,
 	}
 }
 
@@ -76,18 +79,64 @@ func (s *DtakoRowService) GetRowDetail(ctx context.Context, req *pb.GetRowDetail
 		return nil, fmt.Errorf("failed to get tsumi oroshi events: %w", err)
 	}
 
-	// フェリーデータ
-	resp.Dferry = s.convertFerryData(dtakoRow.DtakoFerryRows)
+	// desktop-serverから関連データを取得
+	if s.desktopServerRepo != nil {
+		// ETCデータ（新EtcMeisai）
+		etcMeisai, err := s.desktopServerRepo.GetETCMeisaiByRowID(ctx, req.Id)
+		if err == nil {
+			resp.Ddetc = s.convertEtcMeisaiDataFromDesktop(etcMeisai)
+			resp.DdetcSrchCount = int32(len(etcMeisai))
+		}
 
-	// ETCデータ（新EtcMeisai）
-	resp.Ddetc = s.convertEtcMeisaiData(dtakoRow.EtcMeisai, dtakoRow.DtakoUriageKeihi, req.Id)
-	resp.DdetcSrchCount = s.countEtcMeisaiWithoutUriage(dtakoRow.EtcMeisai)
+		// 売上経費データ
+		uriageKeihi, err := s.desktopServerRepo.GetUriageKeihiByRowID(ctx, req.Id)
+		if err == nil {
+			resp.DUriage = s.convertUriageKeihiDataFromDesktop(uriageKeihi)
+		}
 
-	// 売上経費データ
-	resp.DUriage = s.convertUriageKeihiData(dtakoRow.DtakoUriageKeihi)
+		// フェリーデータ
+		ferryRows, err := s.desktopServerRepo.GetFerryRowsByRowID(ctx, req.Id)
+		if err == nil {
+			resp.Dferry = s.convertFerryDataFromDesktop(ferryRows)
+		}
 
-	// 料費データ
-	resp.RyohiRows = s.convertRyohiRows(dtakoRow.RyohiRows)
+		// 料費データ
+		ryohiRows, err := s.desktopServerRepo.GetRyohiRowsByRowID(ctx, req.Id)
+		if err == nil {
+			resp.RyohiRows = s.convertRyohiRowsFromDesktop(ryohiRows)
+		}
+
+// 		// 燃料単価
+// 		if dtakoRow.KikoDateTime != nil {
+// 			monthInt := dtakoRow.KikoDateTime.Year()*100 + int(dtakoRow.KikoDateTime.Month())
+// 			fuelTanka, err := s.desktopServerRepo.GetFuelTankaByMonth(ctx, monthInt)
+// 			if err == nil && fuelTanka != nil {
+// 				resp.FuelTanka = &pb.FuelTanka{
+// 					MonthInt: int32(fuelTanka.MonthInt),
+// 					Tanka:    fuelTanka.Tanka,
+// 				}
+// 			}
+// 		}
+	} else {
+		// フォールバック: GORMから直接取得
+		resp.Dferry = s.convertFerryData(dtakoRow.DtakoFerryRows)
+		resp.Ddetc = s.convertEtcMeisaiData(dtakoRow.EtcMeisai, dtakoRow.DtakoUriageKeihi, req.Id)
+		resp.DdetcSrchCount = s.countEtcMeisaiWithoutUriage(dtakoRow.EtcMeisai)
+		resp.DUriage = s.convertUriageKeihiData(dtakoRow.DtakoUriageKeihi)
+		resp.RyohiRows = s.convertRyohiRows(dtakoRow.RyohiRows)
+
+		// 燃料単価
+		if dtakoRow.KikoDateTime != nil {
+			monthInt := dtakoRow.KikoDateTime.Year()*100 + int(dtakoRow.KikoDateTime.Month())
+			fuelTanka, err := s.fuelTankaRepo.GetLatestByMonthInt(ctx, monthInt)
+			if err == nil && fuelTanka != nil {
+				resp.FuelTanka = &pb.FuelTanka{
+					MonthInt: int32(fuelTanka.MonthInt),
+					Tanka:    fuelTanka.Tanka,
+				}
+			}
+		}
+	}
 
 	// 一番星データ
 	if dtakoRow.KikoDateTime != nil && s.ichibanRepo != nil {
@@ -95,18 +144,6 @@ func (s *DtakoRowService) GetRowDetail(ctx context.Context, req *pb.GetRowDetail
 		if err == nil {
 			resp.IchiR = ichibanData
 			resp.Keihi = keihiData
-		}
-	}
-
-	// 燃料単価
-	if dtakoRow.KikoDateTime != nil {
-		monthInt := dtakoRow.KikoDateTime.Year()*100 + int(dtakoRow.KikoDateTime.Month())
-		fuelTanka, err := s.fuelTankaRepo.GetLatestByMonthInt(ctx, monthInt)
-		if err == nil && fuelTanka != nil {
-			resp.FuelTanka = &pb.FuelTanka{
-				MonthInt: int32(fuelTanka.MonthInt),
-				Tanka:    fuelTanka.Tanka,
-			}
 		}
 	}
 
@@ -564,3 +601,5 @@ func (s *DtakoRowService) SearchByShaban(ctx context.Context, req *pb.ShabanSear
 		Total: int32(len(rows)),
 	}, nil
 }
+
+// desktop-server用の変換関数
