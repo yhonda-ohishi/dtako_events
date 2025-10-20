@@ -47,3 +47,4 @@ temp/
 # MCP config files with secrets
 .mcp.json
 github-mcp-config.json
+.claude.json
