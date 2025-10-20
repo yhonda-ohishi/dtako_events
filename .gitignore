@@ -34,8 +34,6 @@ go.work
 Thumbs.db
 
 # Generated files
-*.pb.go
-*_grpc.pb.go
 
 # Logs
 *.log
