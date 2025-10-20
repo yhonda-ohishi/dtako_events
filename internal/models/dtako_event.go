@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 // DtakoEvent イベントデータ
@@ -27,9 +25,8 @@ type DtakoEvent struct {
 
 	Tokuisaki        *string `gorm:"column:得意先"`
 
-	CreatedAt        time.Time      `gorm:"column:created"`
-	UpdatedAt        time.Time      `gorm:"column:modified"`
-	DeletedAt        gorm.DeletedAt `gorm:"column:deleted_at;index"`
+	CreatedAt        time.Time `gorm:"column:created"`
+	UpdatedAt        time.Time `gorm:"column:modified"`
 
 	// リレーション
 	DtakoEventsDetail *DtakoEventsDetail `gorm:"foreignKey:SrchID;references:SrchID"`

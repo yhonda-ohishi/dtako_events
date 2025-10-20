@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 // DtakoRow 運行データ
@@ -23,9 +21,8 @@ type DtakoRow struct {
 	SoukouKyori  float64 `gorm:"column:走行距離"`
 	NenryouShiyou float64 `gorm:"column:燃料使用量"`
 
-	CreatedAt time.Time      `gorm:"column:created"`
-	UpdatedAt time.Time      `gorm:"column:modified"`
-	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index"`
+	CreatedAt time.Time `gorm:"column:created"`
+	UpdatedAt time.Time `gorm:"column:modified"`
 
 	// リレーション
 	DtakoEvents     []DtakoEvent      `gorm:"foreignKey:UnkoNo;references:UnkoNo"`

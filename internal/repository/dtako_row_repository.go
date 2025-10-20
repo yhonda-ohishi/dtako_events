@@ -60,12 +60,12 @@ func (r *dtakoRowRepository) GetDetailByID(ctx context.Context, id string) (*mod
 				"運行開始", "運転", "休憩", "休息", "積み", "降し", "運行終了",
 			}).Order("開始日時 ASC")
 		}).
-		Preload("DtakoEvents.DtakoEventsDetail").
-		Preload("Driver").
-		Preload("DtakoFerryRows", func(db *gorm.DB) *gorm.DB {
-			return db.Order("開始日時 ASC")
-		}).
-		Preload("RyohiRows").
+		// Preload("DtakoEvents.DtakoEventsDetail"). // テーブルが存在しない場合はスキップ
+		// Preload("Driver"). // 社員マスタテーブルが存在しない場合はスキップ
+		// Preload("DtakoFerryRows", func(db *gorm.DB) *gorm.DB {
+		// 	return db.Order("開始日時 ASC")
+		// }).
+		// Preload("RyohiRows").
 		Preload("EtcMeisai", func(db *gorm.DB) *gorm.DB {
 			return db.Order("date_to ASC, date_fr ASC")
 		}).

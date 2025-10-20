@@ -88,7 +88,7 @@ func (r *dtakoEventRepository) GetByUnkoNo(ctx context.Context, unkoNo string, e
 	}
 
 	err := query.
-		Preload("DtakoEventsDetail").
+		// Preload("DtakoEventsDetail"). // テーブルが存在しない場合はスキップ
 		Order("開始日時 ASC").
 		Find(&events).Error
 

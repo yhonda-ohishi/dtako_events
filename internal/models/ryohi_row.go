@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 // RyohiRow 料費データ
@@ -16,7 +14,6 @@ type RyohiRow struct {
 	Status      string    `gorm:"column:status"`
 	CreatedAt   time.Time `gorm:"column:created"`
 	UpdatedAt   time.Time `gorm:"column:modified"`
-	DeletedAt   gorm.DeletedAt `gorm:"column:deleted_at;index"`
 }
 
 // TableName テーブル名を指定

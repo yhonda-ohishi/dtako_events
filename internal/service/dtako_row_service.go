@@ -90,7 +90,7 @@ func (s *DtakoRowService) GetRowDetail(ctx context.Context, req *pb.GetRowDetail
 	resp.RyohiRows = s.convertRyohiRows(dtakoRow.RyohiRows)
 
 	// 一番星データ
-	if dtakoRow.KikoDateTime != nil {
+	if dtakoRow.KikoDateTime != nil && s.ichibanRepo != nil {
 		ichibanData, keihiData, err := s.getIchibanData(ctx, dtakoRow)
 		if err == nil {
 			resp.IchiR = ichibanData
