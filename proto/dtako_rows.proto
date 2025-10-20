@@ -5,6 +5,7 @@ package dtako;
 option go_package = "github.com/yhonda-ohishi/dtako_events/proto;dtako";
 
 import "google/protobuf/timestamp.proto";
+import "proto/dtako_events.proto";
 
 // DtakoRowサービス - 運行データの管理
 service DtakoRowService {
@@ -107,39 +108,7 @@ message Row {
   Driver driver = 31;
 }
 
-// イベントデータ
-message Event {
-  string srch_id = 1;               // 主キー
-  string event_type = 2;            // イベント名
-  string unko_no = 3;               // 運行NO
-  string driver_id = 4;             // 運転手ID
-  google.protobuf.Timestamp start_datetime = 5;
-  google.protobuf.Timestamp end_datetime = 6;
-  double start_latitude = 7;
-  double start_longitude = 8;
-  string start_city_name = 9;
-  double end_latitude = 10;
-  double end_longitude = 11;
-  string end_city_name = 12;
-
-  // 追加フィールド
-  string tokuisaki = 13;            // 得意先
-  string biko = 14;                 // 備考
-
-  google.protobuf.Timestamp created_at = 20;
-  google.protobuf.Timestamp updated_at = 21;
-
-  // リレーション
-  EventDetail detail = 30;
-}
-
-// イベント詳細
-message EventDetail {
-  string srch_id = 1;
-  string biko = 2;  // 備考
-}
-
-// 運転手マスタ
+// 運転手マスタ（dtako_rows専用）
 message Driver {
   string code = 1;      // 社員コード
   string name = 2;      // 社員名

@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/yhonda-ohishi/dtako_events/internal/models"
@@ -465,10 +464,6 @@ func convertDtakoEventToProto(event *models.DtakoEvent) *pb.Event {
 	}
 
 	if event.DtakoEventsDetail != nil {
-		pbEvent.Detail = &pb.EventDetail{
-			SrchId: event.DtakoEventsDetail.SrchID,
-			Biko:   event.DtakoEventsDetail.Biko,
-		}
 		pbEvent.Biko = event.DtakoEventsDetail.Biko
 	}
 
