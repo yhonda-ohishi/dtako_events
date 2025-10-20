@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	pb "github.com/yhonda-ohishi/dtako_events/proto"
+	pb "github.com/yhonda-ohishi-pub-dev/desktop-server/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
