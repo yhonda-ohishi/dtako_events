@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/yhonda-ohishi/dtako_events/internal/client"
+	"github.com/yhonda-ohishi/dtako_events/pkg/client"
 )
 
 // Desktop-Server接続テスト

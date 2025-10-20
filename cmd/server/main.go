@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
-	"github.com/yhonda-ohishi/dtako_events/internal/client"
+	"github.com/yhonda-ohishi/dtako_events/pkg/client"
 	"github.com/yhonda-ohishi/dtako_events/internal/config"
 	"github.com/yhonda-ohishi/dtako_events/internal/repository"
 	"github.com/yhonda-ohishi/dtako_events/internal/service"

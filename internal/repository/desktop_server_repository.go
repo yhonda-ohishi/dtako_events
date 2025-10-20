@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/yhonda-ohishi/dtako_events/internal/client"
+	"github.com/yhonda-ohishi/dtako_events/pkg/client"
 	"github.com/yhonda-ohishi/dtako_events/internal/models"
 )
 
