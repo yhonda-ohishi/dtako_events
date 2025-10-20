@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo view yhonda-ohishi-pub-dev/desktop-server)",
+      "Bash(gh repo view yhonda-ohishi/db_service)",
+      "Bash(gh repo view yhonda-ohishi/etc_data_processor)",
+      "Read(//c/go/github-mcp-server/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
