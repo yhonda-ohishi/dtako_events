@@ -8,42 +8,42 @@ import (
 	"gorm.io/gorm"
 )
 
-// DtakoEventRepository イベントデータリポジトリ
+// DtakoEventRepository イベントデータリポジトリ（読み取り専用）
 type DtakoEventRepository interface {
-	Create(ctx context.Context, event *models.DtakoEvent) error
 	GetByID(ctx context.Context, srchID string) (*models.DtakoEvent, error)
-	Update(ctx context.Context, event *models.DtakoEvent) error
-	Delete(ctx context.Context, srchID string) error
-	List(ctx context.Context, page, pageSize int) ([]*models.DtakoEvent, int64, error)
+	GetByUnkoNo(ctx context.Context, unkoNo string, eventTypes []string, startTime, endTime *time.Time) ([]*models.DtakoEvent, error)
+	AggregateByEventType(ctx context.Context, unkoNo string, startTime, endTime *time.Time) (map[string]*EventTypeStats, error)
+}
 
-	// 運行NO指定でイベント一覧取得
-	GetByUnkoNo(ctx context.Context, unkoNo string, eventTypes []string) ([]*models.DtakoEvent, error)
-
-	// 積み・降しイベント取得
-	GetTsumiOroshiByUnkoNo(ctx context.Context, unkoNo string) ([]*models.DtakoEvent, error)
-
-	// 特定の日時より前のイベント取得
-	GetEventsBeforeDateTime(ctx context.Context, unkoNo string, beforeDateTime time.Time, eventTypes []string) ([]*models.DtakoEvent, error)
+// EventTypeStats イベント種別ごとの集計結果
+type EventTypeStats struct {
+	EventType              string
+	Count                  int
+	TotalDurationMinutes   float64
+	AvgDurationMinutes     float64
+	TotalSectionDistance   float64  // db_serviceから取得
+	AvgSectionDistance     float64  // db_serviceから取得
+	TotalMileageDiff       float64  // db_serviceから取得
+	AvgMileageDiff         float64  // db_serviceから取得
 }
 
 type dtakoEventRepository struct {
-	db *gorm.DB
+	db               *gorm.DB
+	dbServiceClient  interface{} // TODO: db_serviceのgRPCクライアント型に変更
 }
 
 // NewDtakoEventRepository リポジトリを作成
 func NewDtakoEventRepository(db *gorm.DB) DtakoEventRepository {
-	return &dtakoEventRepository{db: db}
-}
-
-func (r *dtakoEventRepository) Create(ctx context.Context, event *models.DtakoEvent) error {
-	return r.db.WithContext(ctx).Create(event).Error
+	return &dtakoEventRepository{
+		db:              db,
+		dbServiceClient: nil, // TODO: desktop-server経由でdb_serviceクライアントを渡す
+	}
 }
 
 func (r *dtakoEventRepository) GetByID(ctx context.Context, srchID string) (*models.DtakoEvent, error) {
 	var event models.DtakoEvent
 	err := r.db.WithContext(ctx).
 		Preload("DtakoEventsDetail").
-		Preload("Driver").
 		First(&event, "srch_id = ?", srchID).Error
 	if err != nil {
 		return nil, err
@@ -51,35 +51,7 @@ func (r *dtakoEventRepository) GetByID(ctx context.Context, srchID string) (*mod
 	return &event, nil
 }
 
-func (r *dtakoEventRepository) Update(ctx context.Context, event *models.DtakoEvent) error {
-	return r.db.WithContext(ctx).Save(event).Error
-}
-
-func (r *dtakoEventRepository) Delete(ctx context.Context, srchID string) error {
-	return r.db.WithContext(ctx).Delete(&models.DtakoEvent{}, "srch_id = ?", srchID).Error
-}
-
-func (r *dtakoEventRepository) List(ctx context.Context, page, pageSize int) ([]*models.DtakoEvent, int64, error) {
-	var events []*models.DtakoEvent
-	var total int64
-
-	offset := (page - 1) * pageSize
-
-	if err := r.db.WithContext(ctx).Model(&models.DtakoEvent{}).Count(&total).Error; err != nil {
-		return nil, 0, err
-	}
-
-	err := r.db.WithContext(ctx).
-		Preload("Driver").
-		Offset(offset).
-		Limit(pageSize).
-		Order("開始日時 DESC").
-		Find(&events).Error
-
-	return events, total, err
-}
-
-func (r *dtakoEventRepository) GetByUnkoNo(ctx context.Context, unkoNo string, eventTypes []string) ([]*models.DtakoEvent, error) {
+func (r *dtakoEventRepository) GetByUnkoNo(ctx context.Context, unkoNo string, eventTypes []string, startTime, endTime *time.Time) ([]*models.DtakoEvent, error) {
 	var events []*models.DtakoEvent
 	query := r.db.WithContext(ctx).Where("運行NO = ?", unkoNo)
 
@@ -87,31 +59,78 @@ func (r *dtakoEventRepository) GetByUnkoNo(ctx context.Context, unkoNo string, e
 		query = query.Where("イベント名 IN ?", eventTypes)
 	}
 
+	if startTime != nil {
+		query = query.Where("開始日時 >= ?", *startTime)
+	}
+
+	if endTime != nil {
+		query = query.Where("開始日時 <= ?", *endTime)
+	}
+
 	err := query.
-		// Preload("DtakoEventsDetail"). // テーブルが存在しない場合はスキップ
+		Preload("DtakoEventsDetail").
 		Order("開始日時 ASC").
 		Find(&events).Error
 
 	return events, err
 }
 
-func (r *dtakoEventRepository) GetTsumiOroshiByUnkoNo(ctx context.Context, unkoNo string) ([]*models.DtakoEvent, error) {
-	return r.GetByUnkoNo(ctx, unkoNo, []string{"積み", "降し"})
-}
+func (r *dtakoEventRepository) AggregateByEventType(ctx context.Context, unkoNo string, startTime, endTime *time.Time) (map[string]*EventTypeStats, error) {
+	// TODO: 実装方法
+	// 1. desktop-serverが提供するdb_service経由でDTakoEventsを取得
+	// 2. イベント種別ごとにグループ化して集計
+	//
+	// 現状はローカルDBのみで集計（距離情報なし）
 
-func (r *dtakoEventRepository) GetEventsBeforeDateTime(ctx context.Context, unkoNo string, beforeDateTime time.Time, eventTypes []string) ([]*models.DtakoEvent, error) {
 	var events []*models.DtakoEvent
-	query := r.db.WithContext(ctx).
-		Where("運行NO = ?", unkoNo).
-		Where("開始日時 < ?", beforeDateTime)
+	query := r.db.WithContext(ctx)
 
-	if len(eventTypes) > 0 {
-		query = query.Where("イベント名 IN ?", eventTypes)
+	if unkoNo != "" {
+		query = query.Where("運行NO = ?", unkoNo)
 	}
 
-	err := query.
-		Order("開始日時 DESC").
-		Find(&events).Error
+	if startTime != nil {
+		query = query.Where("開始日時 >= ?", *startTime)
+	}
 
-	return events, err
+	if endTime != nil {
+		query = query.Where("開始日時 <= ?", *endTime)
+	}
+
+	if err := query.Find(&events).Error; err != nil {
+		return nil, err
+	}
+
+	// イベント種別ごとに集計
+	stats := make(map[string]*EventTypeStats)
+
+	for _, event := range events {
+		if _, exists := stats[event.EventName]; !exists {
+			stats[event.EventName] = &EventTypeStats{
+				EventType: event.EventName,
+			}
+		}
+
+		stat := stats[event.EventName]
+		stat.Count++
+
+		// 時間計算
+		if event.EndDateTime != nil {
+			durationMinutes := event.EndDateTime.Sub(event.StartDateTime).Minutes()
+			stat.TotalDurationMinutes += durationMinutes
+		}
+	}
+
+	// 平均を計算
+	for _, stat := range stats {
+		if stat.Count > 0 {
+			stat.AvgDurationMinutes = stat.TotalDurationMinutes / float64(stat.Count)
+		}
+	}
+
+	// TODO: db_serviceから距離情報を取得して統合
+	// stat.TotalSectionDistance, stat.AvgSectionDistance
+	// stat.TotalMileageDiff, stat.AvgMileageDiff
+
+	return stats, nil
 }

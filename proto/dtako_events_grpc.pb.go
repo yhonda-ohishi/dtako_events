@@ -19,16 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DtakoEventService_CreateEvent_FullMethodName       = "/dtako.DtakoEventService/CreateEvent"
-	DtakoEventService_GetEvent_FullMethodName          = "/dtako.DtakoEventService/GetEvent"
-	DtakoEventService_UpdateEvent_FullMethodName       = "/dtako.DtakoEventService/UpdateEvent"
-	DtakoEventService_DeleteEvent_FullMethodName       = "/dtako.DtakoEventService/DeleteEvent"
-	DtakoEventService_ListEvents_FullMethodName        = "/dtako.DtakoEventService/ListEvents"
-	DtakoEventService_FindEmptyLocation_FullMethodName = "/dtako.DtakoEventService/FindEmptyLocation"
-	DtakoEventService_SearchByDateRange_FullMethodName = "/dtako.DtakoEventService/SearchByDateRange"
-	DtakoEventService_SearchByDriver_FullMethodName    = "/dtako.DtakoEventService/SearchByDriver"
-	DtakoEventService_SetLocationByGeo_FullMethodName  = "/dtako.DtakoEventService/SetLocationByGeo"
-	DtakoEventService_SetGeoCode_FullMethodName        = "/dtako.DtakoEventService/SetGeoCode"
+	DtakoEventService_GetEvent_FullMethodName             = "/dtako.DtakoEventService/GetEvent"
+	DtakoEventService_GetByUnkoNo_FullMethodName          = "/dtako.DtakoEventService/GetByUnkoNo"
+	DtakoEventService_AggregateByEventType_FullMethodName = "/dtako.DtakoEventService/AggregateByEventType"
 )
 
 // DtakoEventServiceClient is the client API for DtakoEventService service.
@@ -37,19 +30,11 @@ const (
 //
 // DtakoEventサービス - イベントデータの管理
 type DtakoEventServiceClient interface {
-	// イベント基本操作
-	CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*Event, error)
+	// イベント参照
 	GetEvent(ctx context.Context, in *GetEventRequest, opts ...grpc.CallOption) (*Event, error)
-	UpdateEvent(ctx context.Context, in *UpdateEventRequest, opts ...grpc.CallOption) (*Event, error)
-	DeleteEvent(ctx context.Context, in *DeleteEventRequest, opts ...grpc.CallOption) (*DeleteEventResponse, error)
-	ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
-	// 検索・フィルタリング
-	FindEmptyLocation(ctx context.Context, in *FindEmptyLocationRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
-	SearchByDateRange(ctx context.Context, in *DateRangeRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
-	SearchByDriver(ctx context.Context, in *DriverSearchRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
-	// 位置情報処理
-	SetLocationByGeo(ctx context.Context, in *SetLocationRequest, opts ...grpc.CallOption) (*SetLocationResponse, error)
-	SetGeoCode(ctx context.Context, in *SetGeoCodeRequest, opts ...grpc.CallOption) (*SetGeoCodeResponse, error)
+	GetByUnkoNo(ctx context.Context, in *GetByUnkoNoRequest, opts ...grpc.CallOption) (*GetByUnkoNoResponse, error)
+	// 集計
+	AggregateByEventType(ctx context.Context, in *AggregateByEventTypeRequest, opts ...grpc.CallOption) (*AggregateByEventTypeResponse, error)
 }
 
 type dtakoEventServiceClient struct {
@@ -58,16 +43,6 @@ type dtakoEventServiceClient struct {
 
 func NewDtakoEventServiceClient(cc grpc.ClientConnInterface) DtakoEventServiceClient {
 	return &dtakoEventServiceClient{cc}
-}
-
-func (c *dtakoEventServiceClient) CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*Event, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Event)
-	err := c.cc.Invoke(ctx, DtakoEventService_CreateEvent_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *dtakoEventServiceClient) GetEvent(ctx context.Context, in *GetEventRequest, opts ...grpc.CallOption) (*Event, error) {
@@ -80,80 +55,20 @@ func (c *dtakoEventServiceClient) GetEvent(ctx context.Context, in *GetEventRequ
 	return out, nil
 }
 
-func (c *dtakoEventServiceClient) UpdateEvent(ctx context.Context, in *UpdateEventRequest, opts ...grpc.CallOption) (*Event, error) {
+func (c *dtakoEventServiceClient) GetByUnkoNo(ctx context.Context, in *GetByUnkoNoRequest, opts ...grpc.CallOption) (*GetByUnkoNoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Event)
-	err := c.cc.Invoke(ctx, DtakoEventService_UpdateEvent_FullMethodName, in, out, cOpts...)
+	out := new(GetByUnkoNoResponse)
+	err := c.cc.Invoke(ctx, DtakoEventService_GetByUnkoNo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dtakoEventServiceClient) DeleteEvent(ctx context.Context, in *DeleteEventRequest, opts ...grpc.CallOption) (*DeleteEventResponse, error) {
+func (c *dtakoEventServiceClient) AggregateByEventType(ctx context.Context, in *AggregateByEventTypeRequest, opts ...grpc.CallOption) (*AggregateByEventTypeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteEventResponse)
-	err := c.cc.Invoke(ctx, DtakoEventService_DeleteEvent_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dtakoEventServiceClient) ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListEventsResponse)
-	err := c.cc.Invoke(ctx, DtakoEventService_ListEvents_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dtakoEventServiceClient) FindEmptyLocation(ctx context.Context, in *FindEmptyLocationRequest, opts ...grpc.CallOption) (*ListEventsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListEventsResponse)
-	err := c.cc.Invoke(ctx, DtakoEventService_FindEmptyLocation_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dtakoEventServiceClient) SearchByDateRange(ctx context.Context, in *DateRangeRequest, opts ...grpc.CallOption) (*ListEventsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListEventsResponse)
-	err := c.cc.Invoke(ctx, DtakoEventService_SearchByDateRange_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dtakoEventServiceClient) SearchByDriver(ctx context.Context, in *DriverSearchRequest, opts ...grpc.CallOption) (*ListEventsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListEventsResponse)
-	err := c.cc.Invoke(ctx, DtakoEventService_SearchByDriver_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dtakoEventServiceClient) SetLocationByGeo(ctx context.Context, in *SetLocationRequest, opts ...grpc.CallOption) (*SetLocationResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetLocationResponse)
-	err := c.cc.Invoke(ctx, DtakoEventService_SetLocationByGeo_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dtakoEventServiceClient) SetGeoCode(ctx context.Context, in *SetGeoCodeRequest, opts ...grpc.CallOption) (*SetGeoCodeResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetGeoCodeResponse)
-	err := c.cc.Invoke(ctx, DtakoEventService_SetGeoCode_FullMethodName, in, out, cOpts...)
+	out := new(AggregateByEventTypeResponse)
+	err := c.cc.Invoke(ctx, DtakoEventService_AggregateByEventType_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -166,19 +81,11 @@ func (c *dtakoEventServiceClient) SetGeoCode(ctx context.Context, in *SetGeoCode
 //
 // DtakoEventサービス - イベントデータの管理
 type DtakoEventServiceServer interface {
-	// イベント基本操作
-	CreateEvent(context.Context, *CreateEventRequest) (*Event, error)
+	// イベント参照
 	GetEvent(context.Context, *GetEventRequest) (*Event, error)
-	UpdateEvent(context.Context, *UpdateEventRequest) (*Event, error)
-	DeleteEvent(context.Context, *DeleteEventRequest) (*DeleteEventResponse, error)
-	ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error)
-	// 検索・フィルタリング
-	FindEmptyLocation(context.Context, *FindEmptyLocationRequest) (*ListEventsResponse, error)
-	SearchByDateRange(context.Context, *DateRangeRequest) (*ListEventsResponse, error)
-	SearchByDriver(context.Context, *DriverSearchRequest) (*ListEventsResponse, error)
-	// 位置情報処理
-	SetLocationByGeo(context.Context, *SetLocationRequest) (*SetLocationResponse, error)
-	SetGeoCode(context.Context, *SetGeoCodeRequest) (*SetGeoCodeResponse, error)
+	GetByUnkoNo(context.Context, *GetByUnkoNoRequest) (*GetByUnkoNoResponse, error)
+	// 集計
+	AggregateByEventType(context.Context, *AggregateByEventTypeRequest) (*AggregateByEventTypeResponse, error)
 	mustEmbedUnimplementedDtakoEventServiceServer()
 }
 
@@ -189,35 +96,14 @@ type DtakoEventServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedDtakoEventServiceServer struct{}
 
-func (UnimplementedDtakoEventServiceServer) CreateEvent(context.Context, *CreateEventRequest) (*Event, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateEvent not implemented")
-}
 func (UnimplementedDtakoEventServiceServer) GetEvent(context.Context, *GetEventRequest) (*Event, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEvent not implemented")
 }
-func (UnimplementedDtakoEventServiceServer) UpdateEvent(context.Context, *UpdateEventRequest) (*Event, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateEvent not implemented")
+func (UnimplementedDtakoEventServiceServer) GetByUnkoNo(context.Context, *GetByUnkoNoRequest) (*GetByUnkoNoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByUnkoNo not implemented")
 }
-func (UnimplementedDtakoEventServiceServer) DeleteEvent(context.Context, *DeleteEventRequest) (*DeleteEventResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteEvent not implemented")
-}
-func (UnimplementedDtakoEventServiceServer) ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListEvents not implemented")
-}
-func (UnimplementedDtakoEventServiceServer) FindEmptyLocation(context.Context, *FindEmptyLocationRequest) (*ListEventsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindEmptyLocation not implemented")
-}
-func (UnimplementedDtakoEventServiceServer) SearchByDateRange(context.Context, *DateRangeRequest) (*ListEventsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchByDateRange not implemented")
-}
-func (UnimplementedDtakoEventServiceServer) SearchByDriver(context.Context, *DriverSearchRequest) (*ListEventsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchByDriver not implemented")
-}
-func (UnimplementedDtakoEventServiceServer) SetLocationByGeo(context.Context, *SetLocationRequest) (*SetLocationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetLocationByGeo not implemented")
-}
-func (UnimplementedDtakoEventServiceServer) SetGeoCode(context.Context, *SetGeoCodeRequest) (*SetGeoCodeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetGeoCode not implemented")
+func (UnimplementedDtakoEventServiceServer) AggregateByEventType(context.Context, *AggregateByEventTypeRequest) (*AggregateByEventTypeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AggregateByEventType not implemented")
 }
 func (UnimplementedDtakoEventServiceServer) mustEmbedUnimplementedDtakoEventServiceServer() {}
 func (UnimplementedDtakoEventServiceServer) testEmbeddedByValue()                           {}
@@ -240,24 +126,6 @@ func RegisterDtakoEventServiceServer(s grpc.ServiceRegistrar, srv DtakoEventServ
 	s.RegisterService(&DtakoEventService_ServiceDesc, srv)
 }
 
-func _DtakoEventService_CreateEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateEventRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).CreateEvent(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DtakoEventService_CreateEvent_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).CreateEvent(ctx, req.(*CreateEventRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DtakoEventService_GetEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetEventRequest)
 	if err := dec(in); err != nil {
@@ -276,146 +144,38 @@ func _DtakoEventService_GetEvent_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DtakoEventService_UpdateEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateEventRequest)
+func _DtakoEventService_GetByUnkoNo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByUnkoNoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).UpdateEvent(ctx, in)
+		return srv.(DtakoEventServiceServer).GetByUnkoNo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DtakoEventService_UpdateEvent_FullMethodName,
+		FullMethod: DtakoEventService_GetByUnkoNo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).UpdateEvent(ctx, req.(*UpdateEventRequest))
+		return srv.(DtakoEventServiceServer).GetByUnkoNo(ctx, req.(*GetByUnkoNoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DtakoEventService_DeleteEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteEventRequest)
+func _DtakoEventService_AggregateByEventType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AggregateByEventTypeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).DeleteEvent(ctx, in)
+		return srv.(DtakoEventServiceServer).AggregateByEventType(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DtakoEventService_DeleteEvent_FullMethodName,
+		FullMethod: DtakoEventService_AggregateByEventType_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).DeleteEvent(ctx, req.(*DeleteEventRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DtakoEventService_ListEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListEventsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).ListEvents(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DtakoEventService_ListEvents_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).ListEvents(ctx, req.(*ListEventsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DtakoEventService_FindEmptyLocation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FindEmptyLocationRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).FindEmptyLocation(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DtakoEventService_FindEmptyLocation_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).FindEmptyLocation(ctx, req.(*FindEmptyLocationRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DtakoEventService_SearchByDateRange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DateRangeRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).SearchByDateRange(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DtakoEventService_SearchByDateRange_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).SearchByDateRange(ctx, req.(*DateRangeRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DtakoEventService_SearchByDriver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DriverSearchRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).SearchByDriver(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DtakoEventService_SearchByDriver_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).SearchByDriver(ctx, req.(*DriverSearchRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DtakoEventService_SetLocationByGeo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetLocationRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).SetLocationByGeo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DtakoEventService_SetLocationByGeo_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).SetLocationByGeo(ctx, req.(*SetLocationRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DtakoEventService_SetGeoCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetGeoCodeRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).SetGeoCode(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DtakoEventService_SetGeoCode_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).SetGeoCode(ctx, req.(*SetGeoCodeRequest))
+		return srv.(DtakoEventServiceServer).AggregateByEventType(ctx, req.(*AggregateByEventTypeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -428,44 +188,16 @@ var DtakoEventService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DtakoEventServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateEvent",
-			Handler:    _DtakoEventService_CreateEvent_Handler,
-		},
-		{
 			MethodName: "GetEvent",
 			Handler:    _DtakoEventService_GetEvent_Handler,
 		},
 		{
-			MethodName: "UpdateEvent",
-			Handler:    _DtakoEventService_UpdateEvent_Handler,
+			MethodName: "GetByUnkoNo",
+			Handler:    _DtakoEventService_GetByUnkoNo_Handler,
 		},
 		{
-			MethodName: "DeleteEvent",
-			Handler:    _DtakoEventService_DeleteEvent_Handler,
-		},
-		{
-			MethodName: "ListEvents",
-			Handler:    _DtakoEventService_ListEvents_Handler,
-		},
-		{
-			MethodName: "FindEmptyLocation",
-			Handler:    _DtakoEventService_FindEmptyLocation_Handler,
-		},
-		{
-			MethodName: "SearchByDateRange",
-			Handler:    _DtakoEventService_SearchByDateRange_Handler,
-		},
-		{
-			MethodName: "SearchByDriver",
-			Handler:    _DtakoEventService_SearchByDriver_Handler,
-		},
-		{
-			MethodName: "SetLocationByGeo",
-			Handler:    _DtakoEventService_SetLocationByGeo_Handler,
-		},
-		{
-			MethodName: "SetGeoCode",
-			Handler:    _DtakoEventService_SetGeoCode_Handler,
+			MethodName: "AggregateByEventType",
+			Handler:    _DtakoEventService_AggregateByEventType_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

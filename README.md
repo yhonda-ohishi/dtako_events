@@ -1,30 +1,46 @@
 # dtako_events - Go gRPCサービス
 
-デジタルタコグラフ（DTako）のイベントデータと運行データを管理するgRPCベースのマイクロサービス。
+デジタルタコグラフ（DTako）のイベントデータを管理するgRPCベースのサービス。
+
+**注意**: 運行データ（dtako_rows）は別リポジトリで管理されています。
+
+## アーキテクチャ
+
+このサービスは2つの動作モードをサポートします:
+
+1. **スタンドアロンモード**: 独立したgRPCサーバーとして起動
+2. **レジストリモード**: desktop-serverに統合され、単一プロセス内で動作
+
+### レジストリパターンによる統合
+
+desktop-serverに統合する場合は、`pkg/registry.Register()`を使用:
+
+```go
+import dtakoevents "github.com/yhonda-ohishi/dtako_events/pkg/registry"
+
+// desktop-server内でサービス登録
+dtakoevents.Register(grpcServer, db)
+```
 
 ## 機能
 
 ### 実装済み
 
-- **GetRowDetail (view機能)**: 運行データの詳細取得
-  - 運行データ本体
-  - イベントデータ
-  - 積み・降しペア
-  - 前後の運行データ
-  - ETCデータ
-  - フェリーデータ
-  - 一番星データ
-  - 経費データ
-  - 売上経費データ
-  - 料費データ
-  - 燃料単価
+- **イベント基本操作**
+  - CreateEvent: イベント作成
+  - GetEvent: イベント取得
+  - UpdateEvent: イベント更新
+  - DeleteEvent: イベント削除
+  - ListEvents: イベント一覧取得
 
 ### 今後実装予定
 
+- FindEmptyLocation: 位置情報が空のイベント検索
+- SearchByDateRange: 日付範囲で検索
+- SearchByDriver: 運転手で検索
+- SetLocationByGeo: 位置情報を設定
+- SetGeoCode: ジオコーディング
 - CSVインポート機能（autoload）
-- 位置情報処理（ジオコーディング）
-- 一番星データチェック
-- 料費データ処理
 
 ## セットアップ
 
@@ -90,13 +106,19 @@ make run
 
 ## API使用例
 
-### grpcurlを使用したview機能の呼び出し
+### grpcurlを使用したイベント操作
 
 ```bash
-# GetRowDetail - 運行データ詳細取得
+# GetEvent - イベント取得
 grpcurl -plaintext -d '{
-  "id": "202112010001"
-}' localhost:50052 dtako.DtakoRowService/GetRowDetail
+  "srch_id": "event_001"
+}' localhost:50052 dtako.DtakoEventService/GetEvent
+
+# ListEvents - イベント一覧取得
+grpcurl -plaintext -d '{
+  "page": 1,
+  "page_size": 10
+}' localhost:50052 dtako.DtakoEventService/ListEvents
 ```
 
 ### Goクライアントでの使用例
@@ -119,19 +141,17 @@ func main() {
     }
     defer conn.Close()
 
-    client := pb.NewDtakoRowServiceClient(conn)
+    client := pb.NewDtakoEventServiceClient(conn)
 
-    // 運行データ詳細取得
-    resp, err := client.GetRowDetail(context.Background(), &pb.GetRowDetailRequest{
-        Id: "202112010001",
+    // イベント取得
+    resp, err := client.GetEvent(context.Background(), &pb.GetEventRequest{
+        SrchId: "event_001",
     })
     if err != nil {
         log.Fatal(err)
     }
 
-    log.Printf("DtakoRow: %+v", resp.DtakoRow)
-    log.Printf("Events: %d", len(resp.Events))
-    log.Printf("TsumiOroshi Pairs: %d", len(resp.TsumiOroshiPairs))
+    log.Printf("Event: %+v", resp)
 }
 ```
 
@@ -139,28 +159,26 @@ func main() {
 
 ```
 dtako_events/
-├── proto/                      # Protocol Buffers定義
-│   ├── dtako_events.proto
-│   ├── dtako_rows.proto
+├── proto/                          # Protocol Buffers定義
+│   ├── dtako_events.proto          # イベントサービス定義
 │   └── (生成されたファイル)
+├── pkg/
+│   └── registry/                   # レジストリパターン実装
+│       └── registry.go             # desktop-server統合用
 ├── internal/
-│   ├── models/                # GORMモデル
-│   │   ├── dtako_event.go
-│   │   ├── dtako_row.go
-│   │   ├── ryohi_row.go
-│   │   └── ichiban.go
-│   ├── repository/            # データアクセス層
-│   │   ├── dtako_event_repository.go
-│   │   ├── dtako_row_repository.go
-│   │   ├── ichiban_repository.go
-│   │   └── fuel_tanka_repository.go
-│   ├── service/               # gRPCサービス実装
-│   │   └── dtako_row_service.go
-│   └── config/                # 設定管理
+│   ├── models/                     # GORMモデル
+│   │   ├── dtako_event.go          # イベントモデル
+│   │   ├── driver.go               # 運転手モデル
+│   │   └── ryohi_row.go            # 料費モデル
+│   ├── repository/                 # データアクセス層
+│   │   └── dtako_event_repository.go
+│   ├── service/                    # gRPCサービス実装
+│   │   └── dtako_event_service.go
+│   └── config/                     # 設定管理
 │       └── database.go
 ├── cmd/
 │   └── server/
-│       └── main.go           # エントリポイント
+│       └── main.go                 # エントリポイント（スタンドアロンモード）
 ├── .env.example
 ├── Makefile
 ├── go.mod

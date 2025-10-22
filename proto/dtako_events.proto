@@ -8,21 +8,17 @@ import "google/protobuf/timestamp.proto";
 
 // DtakoEventサービス - イベントデータの管理
 service DtakoEventService {
-  // イベント基本操作
-  rpc CreateEvent(CreateEventRequest) returns (Event);
+  // イベント参照
   rpc GetEvent(GetEventRequest) returns (Event);
-  rpc UpdateEvent(UpdateEventRequest) returns (Event);
-  rpc DeleteEvent(DeleteEventRequest) returns (DeleteEventResponse);
-  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse);
+  rpc GetByUnkoNo(GetByUnkoNoRequest) returns (GetByUnkoNoResponse);
 
-  // 検索・フィルタリング
-  rpc FindEmptyLocation(FindEmptyLocationRequest) returns (ListEventsResponse);
-  rpc SearchByDateRange(DateRangeRequest) returns (ListEventsResponse);
-  rpc SearchByDriver(DriverSearchRequest) returns (ListEventsResponse);
+  // 集計
+  rpc AggregateByEventType(AggregateByEventTypeRequest) returns (AggregateByEventTypeResponse);
 
-  // 位置情報処理
-  rpc SetLocationByGeo(SetLocationRequest) returns (SetLocationResponse);
-  rpc SetGeoCode(SetGeoCodeRequest) returns (SetGeoCodeResponse);
+  // 位置情報処理（TODO: 実装予定）
+  // rpc FindEmptyLocation(FindEmptyLocationRequest) returns (GetByUnkoNoResponse);
+  // rpc SetLocationByGeo(SetLocationRequest) returns (SetLocationResponse);
+  // rpc SetGeoCode(SetGeoCodeRequest) returns (SetGeoCodeResponse);
 }
 
 // イベント（dtako_rows.protoのEventと同じ定義を参照）
@@ -45,71 +41,47 @@ message Event {
   google.protobuf.Timestamp updated_at = 21;
 }
 
-message CreateEventRequest {
-  Event event = 1;
-}
-
 message GetEventRequest {
   string srch_id = 1;
 }
 
-message UpdateEventRequest {
-  Event event = 1;
+// 運行NO指定でイベント一覧取得
+message GetByUnkoNoRequest {
+  string unko_no = 1;
+  repeated string event_types = 2;  // イベント種別フィルタ（空の場合は全て）
+  google.protobuf.Timestamp start_time = 3;  // 開始時刻フィルタ（オプション）
+  google.protobuf.Timestamp end_time = 4;    // 終了時刻フィルタ（オプション）
 }
 
-message DeleteEventRequest {
-  string srch_id = 1;
-}
-
-message DeleteEventResponse {
-  bool success = 1;
-}
-
-message ListEventsRequest {
-  int32 page = 1;
-  int32 page_size = 2;
-  string filter = 3;
-}
-
-message ListEventsResponse {
+message GetByUnkoNoResponse {
   repeated Event events = 1;
-  int32 total = 2;
 }
 
-// 空の位置情報を持つイベント検索
-message FindEmptyLocationRequest {
-  google.protobuf.Timestamp since = 1;  // この日時以降
+// イベント種別ごとの集計
+message AggregateByEventTypeRequest {
+  string unko_no = 1;  // 運行NO（オプション、指定なしで全体集計）
+  google.protobuf.Timestamp start_time = 2;  // 開始時刻フィルタ（オプション）
+  google.protobuf.Timestamp end_time = 3;    // 終了時刻フィルタ（オプション）
 }
 
-// 日付範囲検索
-message DateRangeRequest {
-  google.protobuf.Timestamp date_from = 1;
-  google.protobuf.Timestamp date_to = 2;
+message AggregateByEventTypeResponse {
+  repeated EventTypeAggregate aggregates = 1;
+  EventTypeAggregate total = 2;  // 全イベント種別の合計
 }
 
-// 運転手検索
-message DriverSearchRequest {
-  string driver_id = 1;
-  google.protobuf.Timestamp date_from = 2;
-  google.protobuf.Timestamp date_to = 3;
-}
+message EventTypeAggregate {
+  string event_type = 1;              // イベント種別
+  int32 count = 2;                    // イベント数
 
-// 位置情報設定
-message SetLocationRequest {
-  string srch_id = 1;
-}
+  // 時間集計
+  double total_duration_minutes = 3;   // 合計時間（分）
+  double avg_duration_minutes = 4;     // 平均時間（分）
 
-message SetLocationResponse {
-  bool success = 1;
-  string message = 2;
-}
+  // 距離集計（section_distance from db_service）
+  double total_section_distance = 5;   // 合計区間距離
+  double avg_section_distance = 6;     // 平均区間距離
 
-// ジオコーディング
-message SetGeoCodeRequest {
-  repeated string srch_ids = 1;
-}
-
-message SetGeoCodeResponse {
-  int32 updated_count = 1;
-  repeated string errors = 2;
+  // 走行距離集計（mileage差分 from db_service）
+  double total_mileage_diff = 7;       // 合計走行距離（終了メーター - 開始メーター）
+  double avg_mileage_diff = 8;         // 平均走行距離
 }

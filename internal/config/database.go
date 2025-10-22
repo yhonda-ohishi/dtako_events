@@ -19,15 +19,6 @@ type DatabaseConfig struct {
 	DBName   string
 }
 
-// IchibanDatabaseConfig 一番星データベース設定
-type IchibanDatabaseConfig struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	DBName   string
-}
-
 // LoadDatabaseConfig 環境変数からDB設定を読み込み
 func LoadDatabaseConfig() *DatabaseConfig {
 	return &DatabaseConfig{
@@ -36,17 +27,6 @@ func LoadDatabaseConfig() *DatabaseConfig {
 		User:     getEnv("DB_USER", "root"),
 		Password: getEnv("DB_PASSWORD", ""),
 		DBName:   getEnv("DB_NAME", "dtako_db"),
-	}
-}
-
-// LoadIchibanDatabaseConfig 一番星DB設定を読み込み
-func LoadIchibanDatabaseConfig() *IchibanDatabaseConfig {
-	return &IchibanDatabaseConfig{
-		Host:     getEnv("ICHIBAN_DB_HOST", "localhost"),
-		Port:     getEnv("ICHIBAN_DB_PORT", "3306"),
-		User:     getEnv("ICHIBAN_DB_USER", "root"),
-		Password: getEnv("ICHIBAN_DB_PASSWORD", ""),
-		DBName:   getEnv("ICHIBAN_DB_NAME", "ichiban_db"),
 	}
 }
 
@@ -80,27 +60,6 @@ func ConnectDatabase(config *DatabaseConfig) (*gorm.DB, error) {
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
-
-	return db, nil
-}
-
-// ConnectIchibanDatabase 一番星データベースに接続
-func ConnectIchibanDatabase(config *IchibanDatabaseConfig) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		config.User,
-		config.Password,
-		config.Host,
-		config.Port,
-		config.DBName,
-	)
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to ichiban database: %w", err)
-	}
 
 	return db, nil
 }

@@ -30,7 +30,6 @@ type DtakoEvent struct {
 
 	// リレーション
 	DtakoEventsDetail *DtakoEventsDetail `gorm:"foreignKey:SrchID;references:SrchID"`
-	Driver            *Driver            `gorm:"foreignKey:JomuinCD1;references:Code"`
 }
 
 // TableName テーブル名を指定

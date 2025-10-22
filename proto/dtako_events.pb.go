@@ -187,50 +187,6 @@ func (x *Event) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-type CreateEventRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Event         *Event                 `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CreateEventRequest) Reset() {
-	*x = CreateEventRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateEventRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateEventRequest) ProtoMessage() {}
-
-func (x *CreateEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateEventRequest.ProtoReflect.Descriptor instead.
-func (*CreateEventRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *CreateEventRequest) GetEvent() *Event {
-	if x != nil {
-		return x.Event
-	}
-	return nil
-}
-
 type GetEventRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	SrchId        string                 `protobuf:"bytes,1,opt,name=srch_id,json=srchId,proto3" json:"srch_id,omitempty"`
@@ -240,7 +196,7 @@ type GetEventRequest struct {
 
 func (x *GetEventRequest) Reset() {
 	*x = GetEventRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[2]
+	mi := &file_proto_dtako_events_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -252,7 +208,7 @@ func (x *GetEventRequest) String() string {
 func (*GetEventRequest) ProtoMessage() {}
 
 func (x *GetEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[2]
+	mi := &file_proto_dtako_events_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -265,7 +221,7 @@ func (x *GetEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEventRequest.ProtoReflect.Descriptor instead.
 func (*GetEventRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{2}
+	return file_proto_dtako_events_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *GetEventRequest) GetSrchId() string {
@@ -275,28 +231,32 @@ func (x *GetEventRequest) GetSrchId() string {
 	return ""
 }
 
-type UpdateEventRequest struct {
+// 運行NO指定でイベント一覧取得
+type GetByUnkoNoRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Event         *Event                 `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
+	UnkoNo        string                 `protobuf:"bytes,1,opt,name=unko_no,json=unkoNo,proto3" json:"unko_no,omitempty"`
+	EventTypes    []string               `protobuf:"bytes,2,rep,name=event_types,json=eventTypes,proto3" json:"event_types,omitempty"` // イベント種別フィルタ（空の場合は全て）
+	StartTime     *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`    // 開始時刻フィルタ（オプション）
+	EndTime       *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`          // 終了時刻フィルタ（オプション）
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpdateEventRequest) Reset() {
-	*x = UpdateEventRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[3]
+func (x *GetByUnkoNoRequest) Reset() {
+	*x = GetByUnkoNoRequest{}
+	mi := &file_proto_dtako_events_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpdateEventRequest) String() string {
+func (x *GetByUnkoNoRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateEventRequest) ProtoMessage() {}
+func (*GetByUnkoNoRequest) ProtoMessage() {}
 
-func (x *UpdateEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[3]
+func (x *GetByUnkoNoRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dtako_events_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -307,189 +267,61 @@ func (x *UpdateEventRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateEventRequest.ProtoReflect.Descriptor instead.
-func (*UpdateEventRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{3}
+// Deprecated: Use GetByUnkoNoRequest.ProtoReflect.Descriptor instead.
+func (*GetByUnkoNoRequest) Descriptor() ([]byte, []int) {
+	return file_proto_dtako_events_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *UpdateEventRequest) GetEvent() *Event {
+func (x *GetByUnkoNoRequest) GetUnkoNo() string {
 	if x != nil {
-		return x.Event
+		return x.UnkoNo
+	}
+	return ""
+}
+
+func (x *GetByUnkoNoRequest) GetEventTypes() []string {
+	if x != nil {
+		return x.EventTypes
 	}
 	return nil
 }
 
-type DeleteEventRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SrchId        string                 `protobuf:"bytes,1,opt,name=srch_id,json=srchId,proto3" json:"srch_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *DeleteEventRequest) Reset() {
-	*x = DeleteEventRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteEventRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteEventRequest) ProtoMessage() {}
-
-func (x *DeleteEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[4]
+func (x *GetByUnkoNoRequest) GetStartTime() *timestamppb.Timestamp {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
+		return x.StartTime
 	}
-	return mi.MessageOf(x)
+	return nil
 }
 
-// Deprecated: Use DeleteEventRequest.ProtoReflect.Descriptor instead.
-func (*DeleteEventRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *DeleteEventRequest) GetSrchId() string {
+func (x *GetByUnkoNoRequest) GetEndTime() *timestamppb.Timestamp {
 	if x != nil {
-		return x.SrchId
+		return x.EndTime
 	}
-	return ""
+	return nil
 }
 
-type DeleteEventResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *DeleteEventResponse) Reset() {
-	*x = DeleteEventResponse{}
-	mi := &file_proto_dtako_events_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteEventResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteEventResponse) ProtoMessage() {}
-
-func (x *DeleteEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeleteEventResponse.ProtoReflect.Descriptor instead.
-func (*DeleteEventResponse) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *DeleteEventResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-type ListEventsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
-	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	Filter        string                 `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListEventsRequest) Reset() {
-	*x = ListEventsRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListEventsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListEventsRequest) ProtoMessage() {}
-
-func (x *ListEventsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListEventsRequest.ProtoReflect.Descriptor instead.
-func (*ListEventsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *ListEventsRequest) GetPage() int32 {
-	if x != nil {
-		return x.Page
-	}
-	return 0
-}
-
-func (x *ListEventsRequest) GetPageSize() int32 {
-	if x != nil {
-		return x.PageSize
-	}
-	return 0
-}
-
-func (x *ListEventsRequest) GetFilter() string {
-	if x != nil {
-		return x.Filter
-	}
-	return ""
-}
-
-type ListEventsResponse struct {
+type GetByUnkoNoResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Events        []*Event               `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
-	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ListEventsResponse) Reset() {
-	*x = ListEventsResponse{}
-	mi := &file_proto_dtako_events_proto_msgTypes[7]
+func (x *GetByUnkoNoResponse) Reset() {
+	*x = GetByUnkoNoResponse{}
+	mi := &file_proto_dtako_events_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListEventsResponse) String() string {
+func (x *GetByUnkoNoResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListEventsResponse) ProtoMessage() {}
+func (*GetByUnkoNoResponse) ProtoMessage() {}
 
-func (x *ListEventsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[7]
+func (x *GetByUnkoNoResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dtako_events_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -500,48 +332,163 @@ func (x *ListEventsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ListEventsResponse.ProtoReflect.Descriptor instead.
-func (*ListEventsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{7}
+// Deprecated: Use GetByUnkoNoResponse.ProtoReflect.Descriptor instead.
+func (*GetByUnkoNoResponse) Descriptor() ([]byte, []int) {
+	return file_proto_dtako_events_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ListEventsResponse) GetEvents() []*Event {
+func (x *GetByUnkoNoResponse) GetEvents() []*Event {
 	if x != nil {
 		return x.Events
 	}
 	return nil
 }
 
-func (x *ListEventsResponse) GetTotal() int32 {
+// イベント種別ごとの集計
+type AggregateByEventTypeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UnkoNo        string                 `protobuf:"bytes,1,opt,name=unko_no,json=unkoNo,proto3" json:"unko_no,omitempty"`          // 運行NO（オプション、指定なしで全体集計）
+	StartTime     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"` // 開始時刻フィルタ（オプション）
+	EndTime       *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`       // 終了時刻フィルタ（オプション）
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AggregateByEventTypeRequest) Reset() {
+	*x = AggregateByEventTypeRequest{}
+	mi := &file_proto_dtako_events_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AggregateByEventTypeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AggregateByEventTypeRequest) ProtoMessage() {}
+
+func (x *AggregateByEventTypeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dtako_events_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AggregateByEventTypeRequest.ProtoReflect.Descriptor instead.
+func (*AggregateByEventTypeRequest) Descriptor() ([]byte, []int) {
+	return file_proto_dtako_events_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *AggregateByEventTypeRequest) GetUnkoNo() string {
+	if x != nil {
+		return x.UnkoNo
+	}
+	return ""
+}
+
+func (x *AggregateByEventTypeRequest) GetStartTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.StartTime
+	}
+	return nil
+}
+
+func (x *AggregateByEventTypeRequest) GetEndTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.EndTime
+	}
+	return nil
+}
+
+type AggregateByEventTypeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Aggregates    []*EventTypeAggregate  `protobuf:"bytes,1,rep,name=aggregates,proto3" json:"aggregates,omitempty"`
+	Total         *EventTypeAggregate    `protobuf:"bytes,2,opt,name=total,proto3" json:"total,omitempty"` // 全イベント種別の合計
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AggregateByEventTypeResponse) Reset() {
+	*x = AggregateByEventTypeResponse{}
+	mi := &file_proto_dtako_events_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AggregateByEventTypeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AggregateByEventTypeResponse) ProtoMessage() {}
+
+func (x *AggregateByEventTypeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dtako_events_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AggregateByEventTypeResponse.ProtoReflect.Descriptor instead.
+func (*AggregateByEventTypeResponse) Descriptor() ([]byte, []int) {
+	return file_proto_dtako_events_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *AggregateByEventTypeResponse) GetAggregates() []*EventTypeAggregate {
+	if x != nil {
+		return x.Aggregates
+	}
+	return nil
+}
+
+func (x *AggregateByEventTypeResponse) GetTotal() *EventTypeAggregate {
 	if x != nil {
 		return x.Total
 	}
-	return 0
+	return nil
 }
 
-// 空の位置情報を持つイベント検索
-type FindEmptyLocationRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Since         *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=since,proto3" json:"since,omitempty"` // この日時以降
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+type EventTypeAggregate struct {
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	EventType string                 `protobuf:"bytes,1,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"` // イベント種別
+	Count     int32                  `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`                         // イベント数
+	// 時間集計
+	TotalDurationMinutes float64 `protobuf:"fixed64,3,opt,name=total_duration_minutes,json=totalDurationMinutes,proto3" json:"total_duration_minutes,omitempty"` // 合計時間（分）
+	AvgDurationMinutes   float64 `protobuf:"fixed64,4,opt,name=avg_duration_minutes,json=avgDurationMinutes,proto3" json:"avg_duration_minutes,omitempty"`       // 平均時間（分）
+	// 距離集計（section_distance from db_service）
+	TotalSectionDistance float64 `protobuf:"fixed64,5,opt,name=total_section_distance,json=totalSectionDistance,proto3" json:"total_section_distance,omitempty"` // 合計区間距離
+	AvgSectionDistance   float64 `protobuf:"fixed64,6,opt,name=avg_section_distance,json=avgSectionDistance,proto3" json:"avg_section_distance,omitempty"`       // 平均区間距離
+	// 走行距離集計（mileage差分 from db_service）
+	TotalMileageDiff float64 `protobuf:"fixed64,7,opt,name=total_mileage_diff,json=totalMileageDiff,proto3" json:"total_mileage_diff,omitempty"` // 合計走行距離（終了メーター - 開始メーター）
+	AvgMileageDiff   float64 `protobuf:"fixed64,8,opt,name=avg_mileage_diff,json=avgMileageDiff,proto3" json:"avg_mileage_diff,omitempty"`       // 平均走行距離
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
-func (x *FindEmptyLocationRequest) Reset() {
-	*x = FindEmptyLocationRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[8]
+func (x *EventTypeAggregate) Reset() {
+	*x = EventTypeAggregate{}
+	mi := &file_proto_dtako_events_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *FindEmptyLocationRequest) String() string {
+func (x *EventTypeAggregate) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FindEmptyLocationRequest) ProtoMessage() {}
+func (*EventTypeAggregate) ProtoMessage() {}
 
-func (x *FindEmptyLocationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[8]
+func (x *EventTypeAggregate) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dtako_events_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -552,324 +499,65 @@ func (x *FindEmptyLocationRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FindEmptyLocationRequest.ProtoReflect.Descriptor instead.
-func (*FindEmptyLocationRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{8}
+// Deprecated: Use EventTypeAggregate.ProtoReflect.Descriptor instead.
+func (*EventTypeAggregate) Descriptor() ([]byte, []int) {
+	return file_proto_dtako_events_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *FindEmptyLocationRequest) GetSince() *timestamppb.Timestamp {
+func (x *EventTypeAggregate) GetEventType() string {
 	if x != nil {
-		return x.Since
-	}
-	return nil
-}
-
-// 日付範囲検索
-type DateRangeRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	DateFrom      *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=date_from,json=dateFrom,proto3" json:"date_from,omitempty"`
-	DateTo        *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=date_to,json=dateTo,proto3" json:"date_to,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *DateRangeRequest) Reset() {
-	*x = DateRangeRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[9]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DateRangeRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DateRangeRequest) ProtoMessage() {}
-
-func (x *DateRangeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[9]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DateRangeRequest.ProtoReflect.Descriptor instead.
-func (*DateRangeRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *DateRangeRequest) GetDateFrom() *timestamppb.Timestamp {
-	if x != nil {
-		return x.DateFrom
-	}
-	return nil
-}
-
-func (x *DateRangeRequest) GetDateTo() *timestamppb.Timestamp {
-	if x != nil {
-		return x.DateTo
-	}
-	return nil
-}
-
-// 運転手検索
-type DriverSearchRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	DriverId      string                 `protobuf:"bytes,1,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
-	DateFrom      *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=date_from,json=dateFrom,proto3" json:"date_from,omitempty"`
-	DateTo        *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=date_to,json=dateTo,proto3" json:"date_to,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *DriverSearchRequest) Reset() {
-	*x = DriverSearchRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[10]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DriverSearchRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DriverSearchRequest) ProtoMessage() {}
-
-func (x *DriverSearchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[10]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DriverSearchRequest.ProtoReflect.Descriptor instead.
-func (*DriverSearchRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{10}
-}
-
-func (x *DriverSearchRequest) GetDriverId() string {
-	if x != nil {
-		return x.DriverId
+		return x.EventType
 	}
 	return ""
 }
 
-func (x *DriverSearchRequest) GetDateFrom() *timestamppb.Timestamp {
+func (x *EventTypeAggregate) GetCount() int32 {
 	if x != nil {
-		return x.DateFrom
-	}
-	return nil
-}
-
-func (x *DriverSearchRequest) GetDateTo() *timestamppb.Timestamp {
-	if x != nil {
-		return x.DateTo
-	}
-	return nil
-}
-
-// 位置情報設定
-type SetLocationRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SrchId        string                 `protobuf:"bytes,1,opt,name=srch_id,json=srchId,proto3" json:"srch_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *SetLocationRequest) Reset() {
-	*x = SetLocationRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[11]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SetLocationRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SetLocationRequest) ProtoMessage() {}
-
-func (x *SetLocationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[11]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SetLocationRequest.ProtoReflect.Descriptor instead.
-func (*SetLocationRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *SetLocationRequest) GetSrchId() string {
-	if x != nil {
-		return x.SrchId
-	}
-	return ""
-}
-
-type SetLocationResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *SetLocationResponse) Reset() {
-	*x = SetLocationResponse{}
-	mi := &file_proto_dtako_events_proto_msgTypes[12]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SetLocationResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SetLocationResponse) ProtoMessage() {}
-
-func (x *SetLocationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[12]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SetLocationResponse.ProtoReflect.Descriptor instead.
-func (*SetLocationResponse) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{12}
-}
-
-func (x *SetLocationResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-func (x *SetLocationResponse) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-// ジオコーディング
-type SetGeoCodeRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SrchIds       []string               `protobuf:"bytes,1,rep,name=srch_ids,json=srchIds,proto3" json:"srch_ids,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *SetGeoCodeRequest) Reset() {
-	*x = SetGeoCodeRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[13]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SetGeoCodeRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SetGeoCodeRequest) ProtoMessage() {}
-
-func (x *SetGeoCodeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[13]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SetGeoCodeRequest.ProtoReflect.Descriptor instead.
-func (*SetGeoCodeRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{13}
-}
-
-func (x *SetGeoCodeRequest) GetSrchIds() []string {
-	if x != nil {
-		return x.SrchIds
-	}
-	return nil
-}
-
-type SetGeoCodeResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UpdatedCount  int32                  `protobuf:"varint,1,opt,name=updated_count,json=updatedCount,proto3" json:"updated_count,omitempty"`
-	Errors        []string               `protobuf:"bytes,2,rep,name=errors,proto3" json:"errors,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *SetGeoCodeResponse) Reset() {
-	*x = SetGeoCodeResponse{}
-	mi := &file_proto_dtako_events_proto_msgTypes[14]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SetGeoCodeResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SetGeoCodeResponse) ProtoMessage() {}
-
-func (x *SetGeoCodeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[14]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SetGeoCodeResponse.ProtoReflect.Descriptor instead.
-func (*SetGeoCodeResponse) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{14}
-}
-
-func (x *SetGeoCodeResponse) GetUpdatedCount() int32 {
-	if x != nil {
-		return x.UpdatedCount
+		return x.Count
 	}
 	return 0
 }
 
-func (x *SetGeoCodeResponse) GetErrors() []string {
+func (x *EventTypeAggregate) GetTotalDurationMinutes() float64 {
 	if x != nil {
-		return x.Errors
+		return x.TotalDurationMinutes
 	}
-	return nil
+	return 0
+}
+
+func (x *EventTypeAggregate) GetAvgDurationMinutes() float64 {
+	if x != nil {
+		return x.AvgDurationMinutes
+	}
+	return 0
+}
+
+func (x *EventTypeAggregate) GetTotalSectionDistance() float64 {
+	if x != nil {
+		return x.TotalSectionDistance
+	}
+	return 0
+}
+
+func (x *EventTypeAggregate) GetAvgSectionDistance() float64 {
+	if x != nil {
+		return x.AvgSectionDistance
+	}
+	return 0
+}
+
+func (x *EventTypeAggregate) GetTotalMileageDiff() float64 {
+	if x != nil {
+		return x.TotalMileageDiff
+	}
+	return 0
+}
+
+func (x *EventTypeAggregate) GetAvgMileageDiff() float64 {
+	if x != nil {
+		return x.AvgMileageDiff
+	}
+	return 0
 }
 
 var File_proto_dtako_events_proto protoreflect.FileDescriptor
@@ -897,56 +585,42 @@ const file_proto_dtako_events_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x14 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"8\n" +
-	"\x12CreateEventRequest\x12\"\n" +
-	"\x05event\x18\x01 \x01(\v2\f.dtako.EventR\x05event\"*\n" +
+	"updated_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"*\n" +
 	"\x0fGetEventRequest\x12\x17\n" +
-	"\asrch_id\x18\x01 \x01(\tR\x06srchId\"8\n" +
-	"\x12UpdateEventRequest\x12\"\n" +
-	"\x05event\x18\x01 \x01(\v2\f.dtako.EventR\x05event\"-\n" +
-	"\x12DeleteEventRequest\x12\x17\n" +
-	"\asrch_id\x18\x01 \x01(\tR\x06srchId\"/\n" +
-	"\x13DeleteEventResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\"\\\n" +
-	"\x11ListEventsRequest\x12\x12\n" +
-	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x16\n" +
-	"\x06filter\x18\x03 \x01(\tR\x06filter\"P\n" +
-	"\x12ListEventsResponse\x12$\n" +
-	"\x06events\x18\x01 \x03(\v2\f.dtako.EventR\x06events\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x05R\x05total\"L\n" +
-	"\x18FindEmptyLocationRequest\x120\n" +
-	"\x05since\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x05since\"\x80\x01\n" +
-	"\x10DateRangeRequest\x127\n" +
-	"\tdate_from\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\bdateFrom\x123\n" +
-	"\adate_to\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x06dateTo\"\xa0\x01\n" +
-	"\x13DriverSearchRequest\x12\x1b\n" +
-	"\tdriver_id\x18\x01 \x01(\tR\bdriverId\x127\n" +
-	"\tdate_from\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\bdateFrom\x123\n" +
-	"\adate_to\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x06dateTo\"-\n" +
-	"\x12SetLocationRequest\x12\x17\n" +
-	"\asrch_id\x18\x01 \x01(\tR\x06srchId\"I\n" +
-	"\x13SetLocationResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\".\n" +
-	"\x11SetGeoCodeRequest\x12\x19\n" +
-	"\bsrch_ids\x18\x01 \x03(\tR\asrchIds\"Q\n" +
-	"\x12SetGeoCodeResponse\x12#\n" +
-	"\rupdated_count\x18\x01 \x01(\x05R\fupdatedCount\x12\x16\n" +
-	"\x06errors\x18\x02 \x03(\tR\x06errors2\xaf\x05\n" +
-	"\x11DtakoEventService\x126\n" +
-	"\vCreateEvent\x12\x19.dtako.CreateEventRequest\x1a\f.dtako.Event\x120\n" +
-	"\bGetEvent\x12\x16.dtako.GetEventRequest\x1a\f.dtako.Event\x126\n" +
-	"\vUpdateEvent\x12\x19.dtako.UpdateEventRequest\x1a\f.dtako.Event\x12D\n" +
-	"\vDeleteEvent\x12\x19.dtako.DeleteEventRequest\x1a\x1a.dtako.DeleteEventResponse\x12A\n" +
+	"\asrch_id\x18\x01 \x01(\tR\x06srchId\"\xc0\x01\n" +
+	"\x12GetByUnkoNoRequest\x12\x17\n" +
+	"\aunko_no\x18\x01 \x01(\tR\x06unkoNo\x12\x1f\n" +
+	"\vevent_types\x18\x02 \x03(\tR\n" +
+	"eventTypes\x129\n" +
 	"\n" +
-	"ListEvents\x12\x18.dtako.ListEventsRequest\x1a\x19.dtako.ListEventsResponse\x12O\n" +
-	"\x11FindEmptyLocation\x12\x1f.dtako.FindEmptyLocationRequest\x1a\x19.dtako.ListEventsResponse\x12G\n" +
-	"\x11SearchByDateRange\x12\x17.dtako.DateRangeRequest\x1a\x19.dtako.ListEventsResponse\x12G\n" +
-	"\x0eSearchByDriver\x12\x1a.dtako.DriverSearchRequest\x1a\x19.dtako.ListEventsResponse\x12I\n" +
-	"\x10SetLocationByGeo\x12\x19.dtako.SetLocationRequest\x1a\x1a.dtako.SetLocationResponse\x12A\n" +
+	"start_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x125\n" +
+	"\bend_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\aendTime\";\n" +
+	"\x13GetByUnkoNoResponse\x12$\n" +
+	"\x06events\x18\x01 \x03(\v2\f.dtako.EventR\x06events\"\xa8\x01\n" +
+	"\x1bAggregateByEventTypeRequest\x12\x17\n" +
+	"\aunko_no\x18\x01 \x01(\tR\x06unkoNo\x129\n" +
 	"\n" +
-	"SetGeoCode\x12\x18.dtako.SetGeoCodeRequest\x1a\x19.dtako.SetGeoCodeResponseB3Z1github.com/yhonda-ohishi/dtako_events/proto;dtakob\x06proto3"
+	"start_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x125\n" +
+	"\bend_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\aendTime\"\x8a\x01\n" +
+	"\x1cAggregateByEventTypeResponse\x129\n" +
+	"\n" +
+	"aggregates\x18\x01 \x03(\v2\x19.dtako.EventTypeAggregateR\n" +
+	"aggregates\x12/\n" +
+	"\x05total\x18\x02 \x01(\v2\x19.dtako.EventTypeAggregateR\x05total\"\xf1\x02\n" +
+	"\x12EventTypeAggregate\x12\x1d\n" +
+	"\n" +
+	"event_type\x18\x01 \x01(\tR\teventType\x12\x14\n" +
+	"\x05count\x18\x02 \x01(\x05R\x05count\x124\n" +
+	"\x16total_duration_minutes\x18\x03 \x01(\x01R\x14totalDurationMinutes\x120\n" +
+	"\x14avg_duration_minutes\x18\x04 \x01(\x01R\x12avgDurationMinutes\x124\n" +
+	"\x16total_section_distance\x18\x05 \x01(\x01R\x14totalSectionDistance\x120\n" +
+	"\x14avg_section_distance\x18\x06 \x01(\x01R\x12avgSectionDistance\x12,\n" +
+	"\x12total_mileage_diff\x18\a \x01(\x01R\x10totalMileageDiff\x12(\n" +
+	"\x10avg_mileage_diff\x18\b \x01(\x01R\x0eavgMileageDiff2\xec\x01\n" +
+	"\x11DtakoEventService\x120\n" +
+	"\bGetEvent\x12\x16.dtako.GetEventRequest\x1a\f.dtako.Event\x12D\n" +
+	"\vGetByUnkoNo\x12\x19.dtako.GetByUnkoNoRequest\x1a\x1a.dtako.GetByUnkoNoResponse\x12_\n" +
+	"\x14AggregateByEventType\x12\".dtako.AggregateByEventTypeRequest\x1a#.dtako.AggregateByEventTypeResponseB3Z1github.com/yhonda-ohishi/dtako_events/proto;dtakob\x06proto3"
 
 var (
 	file_proto_dtako_events_proto_rawDescOnce sync.Once
@@ -960,63 +634,40 @@ func file_proto_dtako_events_proto_rawDescGZIP() []byte {
 	return file_proto_dtako_events_proto_rawDescData
 }
 
-var file_proto_dtako_events_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_proto_dtako_events_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_proto_dtako_events_proto_goTypes = []any{
-	(*Event)(nil),                    // 0: dtako.Event
-	(*CreateEventRequest)(nil),       // 1: dtako.CreateEventRequest
-	(*GetEventRequest)(nil),          // 2: dtako.GetEventRequest
-	(*UpdateEventRequest)(nil),       // 3: dtako.UpdateEventRequest
-	(*DeleteEventRequest)(nil),       // 4: dtako.DeleteEventRequest
-	(*DeleteEventResponse)(nil),      // 5: dtako.DeleteEventResponse
-	(*ListEventsRequest)(nil),        // 6: dtako.ListEventsRequest
-	(*ListEventsResponse)(nil),       // 7: dtako.ListEventsResponse
-	(*FindEmptyLocationRequest)(nil), // 8: dtako.FindEmptyLocationRequest
-	(*DateRangeRequest)(nil),         // 9: dtako.DateRangeRequest
-	(*DriverSearchRequest)(nil),      // 10: dtako.DriverSearchRequest
-	(*SetLocationRequest)(nil),       // 11: dtako.SetLocationRequest
-	(*SetLocationResponse)(nil),      // 12: dtako.SetLocationResponse
-	(*SetGeoCodeRequest)(nil),        // 13: dtako.SetGeoCodeRequest
-	(*SetGeoCodeResponse)(nil),       // 14: dtako.SetGeoCodeResponse
-	(*timestamppb.Timestamp)(nil),    // 15: google.protobuf.Timestamp
+	(*Event)(nil),                        // 0: dtako.Event
+	(*GetEventRequest)(nil),              // 1: dtako.GetEventRequest
+	(*GetByUnkoNoRequest)(nil),           // 2: dtako.GetByUnkoNoRequest
+	(*GetByUnkoNoResponse)(nil),          // 3: dtako.GetByUnkoNoResponse
+	(*AggregateByEventTypeRequest)(nil),  // 4: dtako.AggregateByEventTypeRequest
+	(*AggregateByEventTypeResponse)(nil), // 5: dtako.AggregateByEventTypeResponse
+	(*EventTypeAggregate)(nil),           // 6: dtako.EventTypeAggregate
+	(*timestamppb.Timestamp)(nil),        // 7: google.protobuf.Timestamp
 }
 var file_proto_dtako_events_proto_depIdxs = []int32{
-	15, // 0: dtako.Event.start_datetime:type_name -> google.protobuf.Timestamp
-	15, // 1: dtako.Event.end_datetime:type_name -> google.protobuf.Timestamp
-	15, // 2: dtako.Event.created_at:type_name -> google.protobuf.Timestamp
-	15, // 3: dtako.Event.updated_at:type_name -> google.protobuf.Timestamp
-	0,  // 4: dtako.CreateEventRequest.event:type_name -> dtako.Event
-	0,  // 5: dtako.UpdateEventRequest.event:type_name -> dtako.Event
-	0,  // 6: dtako.ListEventsResponse.events:type_name -> dtako.Event
-	15, // 7: dtako.FindEmptyLocationRequest.since:type_name -> google.protobuf.Timestamp
-	15, // 8: dtako.DateRangeRequest.date_from:type_name -> google.protobuf.Timestamp
-	15, // 9: dtako.DateRangeRequest.date_to:type_name -> google.protobuf.Timestamp
-	15, // 10: dtako.DriverSearchRequest.date_from:type_name -> google.protobuf.Timestamp
-	15, // 11: dtako.DriverSearchRequest.date_to:type_name -> google.protobuf.Timestamp
-	1,  // 12: dtako.DtakoEventService.CreateEvent:input_type -> dtako.CreateEventRequest
-	2,  // 13: dtako.DtakoEventService.GetEvent:input_type -> dtako.GetEventRequest
-	3,  // 14: dtako.DtakoEventService.UpdateEvent:input_type -> dtako.UpdateEventRequest
-	4,  // 15: dtako.DtakoEventService.DeleteEvent:input_type -> dtako.DeleteEventRequest
-	6,  // 16: dtako.DtakoEventService.ListEvents:input_type -> dtako.ListEventsRequest
-	8,  // 17: dtako.DtakoEventService.FindEmptyLocation:input_type -> dtako.FindEmptyLocationRequest
-	9,  // 18: dtako.DtakoEventService.SearchByDateRange:input_type -> dtako.DateRangeRequest
-	10, // 19: dtako.DtakoEventService.SearchByDriver:input_type -> dtako.DriverSearchRequest
-	11, // 20: dtako.DtakoEventService.SetLocationByGeo:input_type -> dtako.SetLocationRequest
-	13, // 21: dtako.DtakoEventService.SetGeoCode:input_type -> dtako.SetGeoCodeRequest
-	0,  // 22: dtako.DtakoEventService.CreateEvent:output_type -> dtako.Event
-	0,  // 23: dtako.DtakoEventService.GetEvent:output_type -> dtako.Event
-	0,  // 24: dtako.DtakoEventService.UpdateEvent:output_type -> dtako.Event
-	5,  // 25: dtako.DtakoEventService.DeleteEvent:output_type -> dtako.DeleteEventResponse
-	7,  // 26: dtako.DtakoEventService.ListEvents:output_type -> dtako.ListEventsResponse
-	7,  // 27: dtako.DtakoEventService.FindEmptyLocation:output_type -> dtako.ListEventsResponse
-	7,  // 28: dtako.DtakoEventService.SearchByDateRange:output_type -> dtako.ListEventsResponse
-	7,  // 29: dtako.DtakoEventService.SearchByDriver:output_type -> dtako.ListEventsResponse
-	12, // 30: dtako.DtakoEventService.SetLocationByGeo:output_type -> dtako.SetLocationResponse
-	14, // 31: dtako.DtakoEventService.SetGeoCode:output_type -> dtako.SetGeoCodeResponse
-	22, // [22:32] is the sub-list for method output_type
-	12, // [12:22] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	7,  // 0: dtako.Event.start_datetime:type_name -> google.protobuf.Timestamp
+	7,  // 1: dtako.Event.end_datetime:type_name -> google.protobuf.Timestamp
+	7,  // 2: dtako.Event.created_at:type_name -> google.protobuf.Timestamp
+	7,  // 3: dtako.Event.updated_at:type_name -> google.protobuf.Timestamp
+	7,  // 4: dtako.GetByUnkoNoRequest.start_time:type_name -> google.protobuf.Timestamp
+	7,  // 5: dtako.GetByUnkoNoRequest.end_time:type_name -> google.protobuf.Timestamp
+	0,  // 6: dtako.GetByUnkoNoResponse.events:type_name -> dtako.Event
+	7,  // 7: dtako.AggregateByEventTypeRequest.start_time:type_name -> google.protobuf.Timestamp
+	7,  // 8: dtako.AggregateByEventTypeRequest.end_time:type_name -> google.protobuf.Timestamp
+	6,  // 9: dtako.AggregateByEventTypeResponse.aggregates:type_name -> dtako.EventTypeAggregate
+	6,  // 10: dtako.AggregateByEventTypeResponse.total:type_name -> dtako.EventTypeAggregate
+	1,  // 11: dtako.DtakoEventService.GetEvent:input_type -> dtako.GetEventRequest
+	2,  // 12: dtako.DtakoEventService.GetByUnkoNo:input_type -> dtako.GetByUnkoNoRequest
+	4,  // 13: dtako.DtakoEventService.AggregateByEventType:input_type -> dtako.AggregateByEventTypeRequest
+	0,  // 14: dtako.DtakoEventService.GetEvent:output_type -> dtako.Event
+	3,  // 15: dtako.DtakoEventService.GetByUnkoNo:output_type -> dtako.GetByUnkoNoResponse
+	5,  // 16: dtako.DtakoEventService.AggregateByEventType:output_type -> dtako.AggregateByEventTypeResponse
+	14, // [14:17] is the sub-list for method output_type
+	11, // [11:14] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_proto_dtako_events_proto_init() }
@@ -1030,7 +681,7 @@ func file_proto_dtako_events_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_dtako_events_proto_rawDesc), len(file_proto_dtako_events_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
