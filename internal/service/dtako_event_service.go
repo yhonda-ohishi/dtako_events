@@ -5,56 +5,64 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/yhonda-ohishi/dtako_events/internal/models"
-	"github.com/yhonda-ohishi/dtako_events/internal/repository"
+	dbpb "github.com/yhonda-ohishi/db_service/src/proto"
 	pb "github.com/yhonda-ohishi/dtako_events/proto"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// DtakoEventService イベントデータサービス
+// DtakoEventService イベントデータサービス（db_service経由）
 type DtakoEventService struct {
 	pb.UnimplementedDtakoEventServiceServer
-	eventRepo repository.DtakoEventRepository
+	dbEventsClient dbpb.DTakoEventsServiceClient
 }
 
 // NewDtakoEventService サービスを作成
-func NewDtakoEventService(eventRepo repository.DtakoEventRepository) *DtakoEventService {
+// db_serviceに接続（同一プロセス内またはローカルホスト）
+func NewDtakoEventService() *DtakoEventService {
+	// TODO: 接続先を環境変数で設定可能にする
+	conn, err := grpc.Dial("localhost:50051",
+		grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		// 本番では適切なエラーハンドリング
+		panic(fmt.Sprintf("failed to connect to db_service: %v", err))
+	}
+
 	return &DtakoEventService{
-		eventRepo: eventRepo,
+		dbEventsClient: dbpb.NewDTakoEventsServiceClient(conn),
 	}
 }
 
 // GetEvent イベントを取得
 func (s *DtakoEventService) GetEvent(ctx context.Context, req *pb.GetEventRequest) (*pb.Event, error) {
-	event, err := s.eventRepo.GetByID(ctx, req.SrchId)
+	// db_serviceから取得
+	resp, err := s.dbEventsClient.Get(ctx, &dbpb.GetDTakoEventsRequest{
+		Id: parseEventID(req.SrchId),
+	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to get event: %w", err)
+		return nil, fmt.Errorf("failed to get event from db_service: %w", err)
 	}
-	return convertEventToProto(event), nil
+
+	return convertDBEventToProto(resp.DtakoEvents), nil
 }
 
 // GetByUnkoNo 運行NO指定でイベント一覧取得
 func (s *DtakoEventService) GetByUnkoNo(ctx context.Context, req *pb.GetByUnkoNoRequest) (*pb.GetByUnkoNoResponse, error) {
-	var startTime, endTime *time.Time
-
-	if req.StartTime != nil {
-		t := req.StartTime.AsTime()
-		startTime = &t
-	}
-
-	if req.EndTime != nil {
-		t := req.EndTime.AsTime()
-		endTime = &t
-	}
-
-	events, err := s.eventRepo.GetByUnkoNo(ctx, req.UnkoNo, req.EventTypes, startTime, endTime)
+	// db_serviceから取得
+	resp, err := s.dbEventsClient.GetByOperationNo(ctx, &dbpb.GetDTakoEventsByOperationNoRequest{
+		OperationNo: req.UnkoNo,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to get events by unko_no: %w", err)
+		return nil, fmt.Errorf("failed to get events from db_service: %w", err)
 	}
+
+	// 時刻フィルタリング（クライアント側）
+	events := filterEventsByTime(resp.Items, req.StartTime, req.EndTime)
 
 	pbEvents := make([]*pb.Event, len(events))
 	for i, event := range events {
-		pbEvents[i] = convertEventToProto(event)
+		pbEvents[i] = convertDBEventToProto(event)
 	}
 
 	return &pb.GetByUnkoNoResponse{
@@ -64,31 +72,71 @@ func (s *DtakoEventService) GetByUnkoNo(ctx context.Context, req *pb.GetByUnkoNo
 
 // AggregateByEventType イベント種別ごとの集計
 func (s *DtakoEventService) AggregateByEventType(ctx context.Context, req *pb.AggregateByEventTypeRequest) (*pb.AggregateByEventTypeResponse, error) {
-	var startTime, endTime *time.Time
+	// db_serviceから全イベント取得
+	var allEvents []*dbpb.DTakoEvents
 
-	if req.StartTime != nil {
-		t := req.StartTime.AsTime()
-		startTime = &t
+	if req.UnkoNo != "" {
+		// 運行NO指定
+		resp, err := s.dbEventsClient.GetByOperationNo(ctx, &dbpb.GetDTakoEventsByOperationNoRequest{
+			OperationNo: req.UnkoNo,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("failed to get events from db_service: %w", err)
+		}
+		allEvents = resp.Items
+	} else {
+		// 全イベント取得（TODO: ページネーション対応）
+		resp, err := s.dbEventsClient.List(ctx, &dbpb.ListDTakoEventsRequest{
+			Limit:  1000,
+			Offset: 0,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("failed to list events from db_service: %w", err)
+		}
+		allEvents = resp.Items
 	}
 
-	if req.EndTime != nil {
-		t := req.EndTime.AsTime()
-		endTime = &t
+	// 時刻フィルタリング
+	events := filterEventsByTime(allEvents, req.StartTime, req.EndTime)
+
+	// イベント種別ごとに集計
+	stats := make(map[string]*eventTypeStats)
+
+	for _, event := range events {
+		if _, exists := stats[event.EventName]; !exists {
+			stats[event.EventName] = &eventTypeStats{
+				EventType: event.EventName,
+			}
+		}
+
+		stat := stats[event.EventName]
+		stat.Count++
+
+		// 時間計算（section_time: 秒 → 分）
+		durationMinutes := float64(event.SectionTime) / 60.0
+		stat.TotalDurationMinutes += durationMinutes
+
+		// 距離集計（db_serviceから取得）
+		stat.TotalSectionDistance += event.SectionDistance
+
+		// 走行距離差分（終了メーター - 開始メーター）
+		mileageDiff := event.EndMileage - event.StartMileage
+		stat.TotalMileageDiff += mileageDiff
 	}
 
-	stats, err := s.eventRepo.AggregateByEventType(ctx, req.UnkoNo, startTime, endTime)
-	if err != nil {
-		return nil, fmt.Errorf("failed to aggregate by event type: %w", err)
-	}
-
+	// 平均を計算
 	aggregates := make([]*pb.EventTypeAggregate, 0, len(stats))
-
-	// 全体の合計を計算
 	total := &pb.EventTypeAggregate{
 		EventType: "合計",
 	}
 
 	for _, stat := range stats {
+		if stat.Count > 0 {
+			stat.AvgDurationMinutes = stat.TotalDurationMinutes / float64(stat.Count)
+			stat.AvgSectionDistance = stat.TotalSectionDistance / float64(stat.Count)
+			stat.AvgMileageDiff = stat.TotalMileageDiff / float64(stat.Count)
+		}
+
 		aggregates = append(aggregates, &pb.EventTypeAggregate{
 			EventType:            stat.EventType,
 			Count:                int32(stat.Count),
@@ -120,43 +168,88 @@ func (s *DtakoEventService) AggregateByEventType(ctx context.Context, req *pb.Ag
 	}, nil
 }
 
-// convertEventToProto モデルをProtoに変換
-func convertEventToProto(event *models.DtakoEvent) *pb.Event {
+// ヘルパー関数
+
+type eventTypeStats struct {
+	EventType              string
+	Count                  int
+	TotalDurationMinutes   float64
+	AvgDurationMinutes     float64
+	TotalSectionDistance   float64
+	AvgSectionDistance     float64
+	TotalMileageDiff       float64
+	AvgMileageDiff         float64
+}
+
+func convertDBEventToProto(event *dbpb.DTakoEvents) *pb.Event {
 	if event == nil {
 		return nil
 	}
 
 	pbEvent := &pb.Event{
-		SrchId:         event.SrchID,
+		SrchId:         fmt.Sprintf("%d", event.Id),
 		EventType:      event.EventName,
-		UnkoNo:         event.UnkoNo,
-		DriverId:       event.JomuinCD1,
-		StartDatetime:  timestamppb.New(event.StartDateTime),
-		StartLatitude:  event.StartGPSLat,
-		StartLongitude: event.StartGPSLon,
+		UnkoNo:         event.OperationNo,
+		DriverId:       fmt.Sprintf("%d", event.DriverCode1),
+		StartLatitude:  convertGPSToFloat(event.StartGpsLatitude),
+		StartLongitude: convertGPSToFloat(event.StartGpsLongitude),
 		StartCityName:  event.StartCityName,
-		CreatedAt:      timestamppb.New(event.CreatedAt),
-		UpdatedAt:      timestamppb.New(event.UpdatedAt),
+		EndLatitude:    convertGPSToFloat(event.EndGpsLatitude),
+		EndLongitude:   convertGPSToFloat(event.EndGpsLongitude),
 	}
 
-	if event.EndDateTime != nil {
-		pbEvent.EndDatetime = timestamppb.New(*event.EndDateTime)
+	// 日時変換
+	if startTime, err := time.Parse(time.RFC3339, event.StartDatetime); err == nil {
+		pbEvent.StartDatetime = timestamppb.New(startTime)
+		pbEvent.CreatedAt = timestamppb.New(startTime)
 	}
-	if event.EndGPSLat != nil {
-		pbEvent.EndLatitude = *event.EndGPSLat
+
+	if endTime, err := time.Parse(time.RFC3339, event.EndDatetime); err == nil {
+		pbEvent.EndDatetime = timestamppb.New(endTime)
+		pbEvent.UpdatedAt = timestamppb.New(endTime)
 	}
-	if event.EndGPSLon != nil {
-		pbEvent.EndLongitude = *event.EndGPSLon
-	}
-	if event.EndCityName != nil {
-		pbEvent.EndCityName = *event.EndCityName
-	}
-	if event.Tokuisaki != nil {
-		pbEvent.Tokuisaki = *event.Tokuisaki
-	}
-	if event.DtakoEventsDetail != nil {
-		pbEvent.Biko = event.DtakoEventsDetail.Biko
-	}
+
+	pbEvent.EndCityName = event.EndCityName
 
 	return pbEvent
+}
+
+func filterEventsByTime(events []*dbpb.DTakoEvents, startTime, endTime *timestamppb.Timestamp) []*dbpb.DTakoEvents {
+	if startTime == nil && endTime == nil {
+		return events
+	}
+
+	filtered := make([]*dbpb.DTakoEvents, 0, len(events))
+	for _, event := range events {
+		eventTime, err := time.Parse(time.RFC3339, event.StartDatetime)
+		if err != nil {
+			continue
+		}
+
+		if startTime != nil && eventTime.Before(startTime.AsTime()) {
+			continue
+		}
+
+		if endTime != nil && eventTime.After(endTime.AsTime()) {
+			continue
+		}
+
+		filtered = append(filtered, event)
+	}
+
+	return filtered
+}
+
+func parseEventID(srchID string) int64 {
+	var id int64
+	fmt.Sscanf(srchID, "%d", &id)
+	return id
+}
+
+func convertGPSToFloat(gpsValue *int64) float64 {
+	if gpsValue == nil {
+		return 0
+	}
+	// GPS座標はスケーリングされている可能性があるので変換
+	return float64(*gpsValue) / 1000000.0
 }

@@ -9,8 +9,6 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
-	"github.com/yhonda-ohishi/dtako_events/internal/config"
-	"github.com/yhonda-ohishi/dtako_events/internal/repository"
 	"github.com/yhonda-ohishi/dtako_events/internal/service"
 	pb "github.com/yhonda-ohishi/dtako_events/proto"
 	"google.golang.org/grpc"
@@ -23,19 +21,8 @@ func main() {
 		log.Println("Warning: .env file not found, using environment variables")
 	}
 
-	// データベース接続
-	dbConfig := config.LoadDatabaseConfig()
-	db, err := config.ConnectDatabase(dbConfig)
-	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
-	}
-	log.Println("Connected to main database")
-
-	// リポジトリ初期化
-	eventRepo := repository.NewDtakoEventRepository(db)
-
-	// サービス初期化
-	dtakoEventService := service.NewDtakoEventService(eventRepo)
+	// サービス初期化（db_service経由でデータアクセス）
+	dtakoEventService := service.NewDtakoEventService()
 
 	// gRPCサーバー作成
 	grpcServer := grpc.NewServer()
@@ -71,7 +58,8 @@ func main() {
 	// サーバー起動
 	log.Printf("Starting gRPC server on port %s...", port)
 	log.Printf("Services registered:")
-	log.Printf("  - DtakoEventService")
+	log.Printf("  - DtakoEventService (data access via db_service)")
+	log.Printf("Note: Requires db_service running on localhost:50051")
 
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %v", err)

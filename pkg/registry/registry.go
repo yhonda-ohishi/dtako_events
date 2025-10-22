@@ -3,11 +3,9 @@ package registry
 import (
 	"log"
 
-	"github.com/yhonda-ohishi/dtako_events/internal/repository"
 	"github.com/yhonda-ohishi/dtako_events/internal/service"
 	pb "github.com/yhonda-ohishi/dtako_events/proto"
 	"google.golang.org/grpc"
-	"gorm.io/gorm"
 )
 
 // Register dtako_eventsサービスをgRPCサーバーに登録
@@ -19,19 +17,14 @@ import (
 //   - DtakoEventService: イベントデータ管理
 //
 // データアクセス:
-//   - 全てdesktop-server経由で行う（直接DB接続なし）
-//   - desktop-serverが更新されると自動的に最新機能が利用可能
-func Register(grpcServer *grpc.Server, db *gorm.DB) error {
+//   - db_service経由で行う（同一プロセス内gRPC呼び出し）
+//   - db_serviceがDB操作を担当し、このサービスはビジネスロジックのみ
+func Register(grpcServer *grpc.Server) error {
 	log.Println("Registering dtako_events service...")
 
-	// リポジトリ初期化
-	eventRepo := repository.NewDtakoEventRepository(db)
-
-	// サービス初期化
-	dtakoEventService := service.NewDtakoEventService(eventRepo)
-
-	// gRPCサービス登録
-	pb.RegisterDtakoEventServiceServer(grpcServer, dtakoEventService)
+	// ビジネスロジックサービスのみ登録（DB接続不要）
+	svc := service.NewDtakoEventService()
+	pb.RegisterDtakoEventServiceServer(grpcServer, svc)
 
 	log.Println("dtako_events service registered successfully")
 	return nil

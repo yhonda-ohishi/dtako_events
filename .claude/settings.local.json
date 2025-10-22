@@ -5,7 +5,8 @@
       "Bash(gh repo view yhonda-ohishi/db_service)",
       "Bash(gh repo view yhonda-ohishi/etc_data_processor)",
       "Read(//c/go/github-mcp-server/**)",
-      "Bash(curl -s https://raw.githubusercontent.com/yhonda-ohishi/db_service/master/src/proto/ryohi.proto)"
+      "Bash(curl -s https://raw.githubusercontent.com/yhonda-ohishi/db_service/master/src/proto/ryohi.proto)",
+      "Bash(go build ./cmd/server)"
     ],
     "deny": [],
     "ask": []
