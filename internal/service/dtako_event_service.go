@@ -15,7 +15,7 @@ import (
 // DtakoEventService イベントデータサービス（db_service経由）
 type DtakoEventService struct {
 	pb.UnimplementedDtakoEventServiceServer
-	dbEventsClient dbpb.DTakoEventsServiceClient
+	dbEventsClient dbpb.Db_DTakoEventsServiceClient
 }
 
 // NewDtakoEventService サービスを作成
@@ -30,14 +30,14 @@ func NewDtakoEventService() *DtakoEventService {
 	}
 
 	return &DtakoEventService{
-		dbEventsClient: dbpb.NewDTakoEventsServiceClient(conn),
+		dbEventsClient: dbpb.NewDb_DTakoEventsServiceClient(conn),
 	}
 }
 
 // GetEvent イベントを取得
 func (s *DtakoEventService) GetEvent(ctx context.Context, req *pb.GetEventRequest) (*pb.Event, error) {
 	// db_serviceから取得
-	resp, err := s.dbEventsClient.Get(ctx, &dbpb.GetDTakoEventsRequest{
+	resp, err := s.dbEventsClient.Get(ctx, &dbpb.Db_GetDTakoEventsRequest{
 		Id: parseEventID(req.SrchId),
 	})
 	if err != nil {
@@ -50,7 +50,7 @@ func (s *DtakoEventService) GetEvent(ctx context.Context, req *pb.GetEventReques
 // GetByUnkoNo 運行NO指定でイベント一覧取得
 func (s *DtakoEventService) GetByUnkoNo(ctx context.Context, req *pb.GetByUnkoNoRequest) (*pb.GetByUnkoNoResponse, error) {
 	// db_serviceから取得
-	resp, err := s.dbEventsClient.GetByOperationNo(ctx, &dbpb.GetDTakoEventsByOperationNoRequest{
+	resp, err := s.dbEventsClient.GetByOperationNo(ctx, &dbpb.Db_GetDTakoEventsByOperationNoRequest{
 		OperationNo: req.UnkoNo,
 	})
 	if err != nil {
@@ -73,11 +73,11 @@ func (s *DtakoEventService) GetByUnkoNo(ctx context.Context, req *pb.GetByUnkoNo
 // AggregateByEventType イベント種別ごとの集計
 func (s *DtakoEventService) AggregateByEventType(ctx context.Context, req *pb.AggregateByEventTypeRequest) (*pb.AggregateByEventTypeResponse, error) {
 	// db_serviceから全イベント取得
-	var allEvents []*dbpb.DTakoEvents
+	var allEvents []*dbpb.Db_DTakoEvents
 
 	if req.UnkoNo != "" {
 		// 運行NO指定
-		resp, err := s.dbEventsClient.GetByOperationNo(ctx, &dbpb.GetDTakoEventsByOperationNoRequest{
+		resp, err := s.dbEventsClient.GetByOperationNo(ctx, &dbpb.Db_GetDTakoEventsByOperationNoRequest{
 			OperationNo: req.UnkoNo,
 		})
 		if err != nil {
@@ -86,7 +86,7 @@ func (s *DtakoEventService) AggregateByEventType(ctx context.Context, req *pb.Ag
 		allEvents = resp.Items
 	} else {
 		// 全イベント取得（TODO: ページネーション対応）
-		resp, err := s.dbEventsClient.List(ctx, &dbpb.ListDTakoEventsRequest{
+		resp, err := s.dbEventsClient.List(ctx, &dbpb.Db_ListDTakoEventsRequest{
 			Limit:  1000,
 			Offset: 0,
 		})
@@ -181,7 +181,7 @@ type eventTypeStats struct {
 	AvgMileageDiff         float64
 }
 
-func convertDBEventToProto(event *dbpb.DTakoEvents) *pb.Event {
+func convertDBEventToProto(event *dbpb.Db_DTakoEvents) *pb.Event {
 	if event == nil {
 		return nil
 	}
@@ -214,12 +214,12 @@ func convertDBEventToProto(event *dbpb.DTakoEvents) *pb.Event {
 	return pbEvent
 }
 
-func filterEventsByTime(events []*dbpb.DTakoEvents, startTime, endTime *timestamppb.Timestamp) []*dbpb.DTakoEvents {
+func filterEventsByTime(events []*dbpb.Db_DTakoEvents, startTime, endTime *timestamppb.Timestamp) []*dbpb.Db_DTakoEvents {
 	if startTime == nil && endTime == nil {
 		return events
 	}
 
-	filtered := make([]*dbpb.DTakoEvents, 0, len(events))
+	filtered := make([]*dbpb.Db_DTakoEvents, 0, len(events))
 	for _, event := range events {
 		eventTime, err := time.Parse(time.RFC3339, event.StartDatetime)
 		if err != nil {
