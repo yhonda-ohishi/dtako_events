@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v6.32.1
-// source: proto/dtako_events.proto
+// source: dtako_events.proto
 
 package dtako
 
@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DtakoEventService_GetEvent_FullMethodName             = "/dtako.DtakoEventService/GetEvent"
-	DtakoEventService_GetByUnkoNo_FullMethodName          = "/dtako.DtakoEventService/GetByUnkoNo"
-	DtakoEventService_AggregateByEventType_FullMethodName = "/dtako.DtakoEventService/AggregateByEventType"
+	DtakoEventService_GetDTakoEvent_FullMethodName              = "/dtako.DtakoEventService/GetDTakoEvent"
+	DtakoEventService_ListDTakoEventsByUnkoNo_FullMethodName    = "/dtako.DtakoEventService/ListDTakoEventsByUnkoNo"
+	DtakoEventService_AggregateDTakoEventsByType_FullMethodName = "/dtako.DtakoEventService/AggregateDTakoEventsByType"
 )
 
 // DtakoEventServiceClient is the client API for DtakoEventService service.
@@ -31,10 +31,10 @@ const (
 // DtakoEventサービス - イベントデータの管理
 type DtakoEventServiceClient interface {
 	// イベント参照
-	GetEvent(ctx context.Context, in *GetEventRequest, opts ...grpc.CallOption) (*Event, error)
-	GetByUnkoNo(ctx context.Context, in *GetByUnkoNoRequest, opts ...grpc.CallOption) (*GetByUnkoNoResponse, error)
+	GetDTakoEvent(ctx context.Context, in *GetEventRequest, opts ...grpc.CallOption) (*Event, error)
+	ListDTakoEventsByUnkoNo(ctx context.Context, in *GetByUnkoNoRequest, opts ...grpc.CallOption) (*GetByUnkoNoResponse, error)
 	// 集計
-	AggregateByEventType(ctx context.Context, in *AggregateByEventTypeRequest, opts ...grpc.CallOption) (*AggregateByEventTypeResponse, error)
+	AggregateDTakoEventsByType(ctx context.Context, in *AggregateByEventTypeRequest, opts ...grpc.CallOption) (*AggregateByEventTypeResponse, error)
 }
 
 type dtakoEventServiceClient struct {
@@ -45,30 +45,30 @@ func NewDtakoEventServiceClient(cc grpc.ClientConnInterface) DtakoEventServiceCl
 	return &dtakoEventServiceClient{cc}
 }
 
-func (c *dtakoEventServiceClient) GetEvent(ctx context.Context, in *GetEventRequest, opts ...grpc.CallOption) (*Event, error) {
+func (c *dtakoEventServiceClient) GetDTakoEvent(ctx context.Context, in *GetEventRequest, opts ...grpc.CallOption) (*Event, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Event)
-	err := c.cc.Invoke(ctx, DtakoEventService_GetEvent_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, DtakoEventService_GetDTakoEvent_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dtakoEventServiceClient) GetByUnkoNo(ctx context.Context, in *GetByUnkoNoRequest, opts ...grpc.CallOption) (*GetByUnkoNoResponse, error) {
+func (c *dtakoEventServiceClient) ListDTakoEventsByUnkoNo(ctx context.Context, in *GetByUnkoNoRequest, opts ...grpc.CallOption) (*GetByUnkoNoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetByUnkoNoResponse)
-	err := c.cc.Invoke(ctx, DtakoEventService_GetByUnkoNo_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, DtakoEventService_ListDTakoEventsByUnkoNo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dtakoEventServiceClient) AggregateByEventType(ctx context.Context, in *AggregateByEventTypeRequest, opts ...grpc.CallOption) (*AggregateByEventTypeResponse, error) {
+func (c *dtakoEventServiceClient) AggregateDTakoEventsByType(ctx context.Context, in *AggregateByEventTypeRequest, opts ...grpc.CallOption) (*AggregateByEventTypeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AggregateByEventTypeResponse)
-	err := c.cc.Invoke(ctx, DtakoEventService_AggregateByEventType_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, DtakoEventService_AggregateDTakoEventsByType_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -82,10 +82,10 @@ func (c *dtakoEventServiceClient) AggregateByEventType(ctx context.Context, in *
 // DtakoEventサービス - イベントデータの管理
 type DtakoEventServiceServer interface {
 	// イベント参照
-	GetEvent(context.Context, *GetEventRequest) (*Event, error)
-	GetByUnkoNo(context.Context, *GetByUnkoNoRequest) (*GetByUnkoNoResponse, error)
+	GetDTakoEvent(context.Context, *GetEventRequest) (*Event, error)
+	ListDTakoEventsByUnkoNo(context.Context, *GetByUnkoNoRequest) (*GetByUnkoNoResponse, error)
 	// 集計
-	AggregateByEventType(context.Context, *AggregateByEventTypeRequest) (*AggregateByEventTypeResponse, error)
+	AggregateDTakoEventsByType(context.Context, *AggregateByEventTypeRequest) (*AggregateByEventTypeResponse, error)
 	mustEmbedUnimplementedDtakoEventServiceServer()
 }
 
@@ -96,14 +96,14 @@ type DtakoEventServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedDtakoEventServiceServer struct{}
 
-func (UnimplementedDtakoEventServiceServer) GetEvent(context.Context, *GetEventRequest) (*Event, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetEvent not implemented")
+func (UnimplementedDtakoEventServiceServer) GetDTakoEvent(context.Context, *GetEventRequest) (*Event, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDTakoEvent not implemented")
 }
-func (UnimplementedDtakoEventServiceServer) GetByUnkoNo(context.Context, *GetByUnkoNoRequest) (*GetByUnkoNoResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetByUnkoNo not implemented")
+func (UnimplementedDtakoEventServiceServer) ListDTakoEventsByUnkoNo(context.Context, *GetByUnkoNoRequest) (*GetByUnkoNoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListDTakoEventsByUnkoNo not implemented")
 }
-func (UnimplementedDtakoEventServiceServer) AggregateByEventType(context.Context, *AggregateByEventTypeRequest) (*AggregateByEventTypeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AggregateByEventType not implemented")
+func (UnimplementedDtakoEventServiceServer) AggregateDTakoEventsByType(context.Context, *AggregateByEventTypeRequest) (*AggregateByEventTypeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AggregateDTakoEventsByType not implemented")
 }
 func (UnimplementedDtakoEventServiceServer) mustEmbedUnimplementedDtakoEventServiceServer() {}
 func (UnimplementedDtakoEventServiceServer) testEmbeddedByValue()                           {}
@@ -126,56 +126,56 @@ func RegisterDtakoEventServiceServer(s grpc.ServiceRegistrar, srv DtakoEventServ
 	s.RegisterService(&DtakoEventService_ServiceDesc, srv)
 }
 
-func _DtakoEventService_GetEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _DtakoEventService_GetDTakoEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetEventRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).GetEvent(ctx, in)
+		return srv.(DtakoEventServiceServer).GetDTakoEvent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DtakoEventService_GetEvent_FullMethodName,
+		FullMethod: DtakoEventService_GetDTakoEvent_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).GetEvent(ctx, req.(*GetEventRequest))
+		return srv.(DtakoEventServiceServer).GetDTakoEvent(ctx, req.(*GetEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DtakoEventService_GetByUnkoNo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _DtakoEventService_ListDTakoEventsByUnkoNo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetByUnkoNoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).GetByUnkoNo(ctx, in)
+		return srv.(DtakoEventServiceServer).ListDTakoEventsByUnkoNo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DtakoEventService_GetByUnkoNo_FullMethodName,
+		FullMethod: DtakoEventService_ListDTakoEventsByUnkoNo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).GetByUnkoNo(ctx, req.(*GetByUnkoNoRequest))
+		return srv.(DtakoEventServiceServer).ListDTakoEventsByUnkoNo(ctx, req.(*GetByUnkoNoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DtakoEventService_AggregateByEventType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _DtakoEventService_AggregateDTakoEventsByType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AggregateByEventTypeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DtakoEventServiceServer).AggregateByEventType(ctx, in)
+		return srv.(DtakoEventServiceServer).AggregateDTakoEventsByType(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DtakoEventService_AggregateByEventType_FullMethodName,
+		FullMethod: DtakoEventService_AggregateDTakoEventsByType_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DtakoEventServiceServer).AggregateByEventType(ctx, req.(*AggregateByEventTypeRequest))
+		return srv.(DtakoEventServiceServer).AggregateDTakoEventsByType(ctx, req.(*AggregateByEventTypeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -188,18 +188,18 @@ var DtakoEventService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DtakoEventServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetEvent",
-			Handler:    _DtakoEventService_GetEvent_Handler,
+			MethodName: "GetDTakoEvent",
+			Handler:    _DtakoEventService_GetDTakoEvent_Handler,
 		},
 		{
-			MethodName: "GetByUnkoNo",
-			Handler:    _DtakoEventService_GetByUnkoNo_Handler,
+			MethodName: "ListDTakoEventsByUnkoNo",
+			Handler:    _DtakoEventService_ListDTakoEventsByUnkoNo_Handler,
 		},
 		{
-			MethodName: "AggregateByEventType",
-			Handler:    _DtakoEventService_AggregateByEventType_Handler,
+			MethodName: "AggregateDTakoEventsByType",
+			Handler:    _DtakoEventService_AggregateDTakoEventsByType_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/dtako_events.proto",
+	Metadata: "dtako_events.proto",
 }

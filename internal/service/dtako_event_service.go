@@ -34,8 +34,8 @@ func NewDtakoEventService() *DtakoEventService {
 	}
 }
 
-// GetEvent イベントを取得
-func (s *DtakoEventService) GetEvent(ctx context.Context, req *pb.GetEventRequest) (*pb.Event, error) {
+// GetDTakoEvent イベントを取得
+func (s *DtakoEventService) GetDTakoEvent(ctx context.Context, req *pb.GetEventRequest) (*pb.Event, error) {
 	// db_serviceから取得
 	resp, err := s.dbEventsClient.Get(ctx, &dbpb.Db_GetDTakoEventsRequest{
 		Id: parseEventID(req.SrchId),
@@ -47,8 +47,8 @@ func (s *DtakoEventService) GetEvent(ctx context.Context, req *pb.GetEventReques
 	return convertDBEventToProto(resp.DtakoEvents), nil
 }
 
-// GetByUnkoNo 運行NO指定でイベント一覧取得
-func (s *DtakoEventService) GetByUnkoNo(ctx context.Context, req *pb.GetByUnkoNoRequest) (*pb.GetByUnkoNoResponse, error) {
+// ListDTakoEventsByUnkoNo 運行NO指定でイベント一覧取得
+func (s *DtakoEventService) ListDTakoEventsByUnkoNo(ctx context.Context, req *pb.GetByUnkoNoRequest) (*pb.GetByUnkoNoResponse, error) {
 	// タイムスタンプをRFC3339文字列に変換
 	var startTimeStr, endTimeStr string
 	if req.StartTime != nil {
@@ -80,8 +80,8 @@ func (s *DtakoEventService) GetByUnkoNo(ctx context.Context, req *pb.GetByUnkoNo
 	}, nil
 }
 
-// AggregateByEventType イベント種別ごとの集計
-func (s *DtakoEventService) AggregateByEventType(ctx context.Context, req *pb.AggregateByEventTypeRequest) (*pb.AggregateByEventTypeResponse, error) {
+// AggregateDTakoEventsByType イベント種別ごとの集計
+func (s *DtakoEventService) AggregateDTakoEventsByType(ctx context.Context, req *pb.AggregateByEventTypeRequest) (*pb.AggregateByEventTypeResponse, error) {
 	// db_serviceから全イベント取得
 	var allEvents []*dbpb.Db_DTakoEvents
 

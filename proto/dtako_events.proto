@@ -9,11 +9,11 @@ import "google/protobuf/timestamp.proto";
 // DtakoEventサービス - イベントデータの管理
 service DtakoEventService {
   // イベント参照
-  rpc GetEvent(GetEventRequest) returns (Event);
-  rpc GetByUnkoNo(GetByUnkoNoRequest) returns (GetByUnkoNoResponse);
+  rpc GetDTakoEvent(GetEventRequest) returns (Event);
+  rpc ListDTakoEventsByUnkoNo(GetByUnkoNoRequest) returns (GetByUnkoNoResponse);
 
   // 集計
-  rpc AggregateByEventType(AggregateByEventTypeRequest) returns (AggregateByEventTypeResponse);
+  rpc AggregateDTakoEventsByType(AggregateByEventTypeRequest) returns (AggregateByEventTypeResponse);
 
   // 位置情報処理（TODO: 実装予定）
   // rpc FindEmptyLocation(FindEmptyLocationRequest) returns (GetByUnkoNoResponse);

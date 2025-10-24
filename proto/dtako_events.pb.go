@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.9
 // 	protoc        v6.32.1
-// source: proto/dtako_events.proto
+// source: dtako_events.proto
 
 package dtako
 
@@ -47,7 +47,7 @@ type Event struct {
 
 func (x *Event) Reset() {
 	*x = Event{}
-	mi := &file_proto_dtako_events_proto_msgTypes[0]
+	mi := &file_dtako_events_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -59,7 +59,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[0]
+	mi := &file_dtako_events_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -72,7 +72,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{0}
+	return file_dtako_events_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Event) GetSrchId() string {
@@ -196,7 +196,7 @@ type GetEventRequest struct {
 
 func (x *GetEventRequest) Reset() {
 	*x = GetEventRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[1]
+	mi := &file_dtako_events_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -208,7 +208,7 @@ func (x *GetEventRequest) String() string {
 func (*GetEventRequest) ProtoMessage() {}
 
 func (x *GetEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[1]
+	mi := &file_dtako_events_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -221,7 +221,7 @@ func (x *GetEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEventRequest.ProtoReflect.Descriptor instead.
 func (*GetEventRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{1}
+	return file_dtako_events_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *GetEventRequest) GetSrchId() string {
@@ -244,7 +244,7 @@ type GetByUnkoNoRequest struct {
 
 func (x *GetByUnkoNoRequest) Reset() {
 	*x = GetByUnkoNoRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[2]
+	mi := &file_dtako_events_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -256,7 +256,7 @@ func (x *GetByUnkoNoRequest) String() string {
 func (*GetByUnkoNoRequest) ProtoMessage() {}
 
 func (x *GetByUnkoNoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[2]
+	mi := &file_dtako_events_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -269,7 +269,7 @@ func (x *GetByUnkoNoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetByUnkoNoRequest.ProtoReflect.Descriptor instead.
 func (*GetByUnkoNoRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{2}
+	return file_dtako_events_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetByUnkoNoRequest) GetUnkoNo() string {
@@ -309,7 +309,7 @@ type GetByUnkoNoResponse struct {
 
 func (x *GetByUnkoNoResponse) Reset() {
 	*x = GetByUnkoNoResponse{}
-	mi := &file_proto_dtako_events_proto_msgTypes[3]
+	mi := &file_dtako_events_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -321,7 +321,7 @@ func (x *GetByUnkoNoResponse) String() string {
 func (*GetByUnkoNoResponse) ProtoMessage() {}
 
 func (x *GetByUnkoNoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[3]
+	mi := &file_dtako_events_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -334,7 +334,7 @@ func (x *GetByUnkoNoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetByUnkoNoResponse.ProtoReflect.Descriptor instead.
 func (*GetByUnkoNoResponse) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{3}
+	return file_dtako_events_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetByUnkoNoResponse) GetEvents() []*Event {
@@ -356,7 +356,7 @@ type AggregateByEventTypeRequest struct {
 
 func (x *AggregateByEventTypeRequest) Reset() {
 	*x = AggregateByEventTypeRequest{}
-	mi := &file_proto_dtako_events_proto_msgTypes[4]
+	mi := &file_dtako_events_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -368,7 +368,7 @@ func (x *AggregateByEventTypeRequest) String() string {
 func (*AggregateByEventTypeRequest) ProtoMessage() {}
 
 func (x *AggregateByEventTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[4]
+	mi := &file_dtako_events_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -381,7 +381,7 @@ func (x *AggregateByEventTypeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AggregateByEventTypeRequest.ProtoReflect.Descriptor instead.
 func (*AggregateByEventTypeRequest) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{4}
+	return file_dtako_events_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *AggregateByEventTypeRequest) GetUnkoNo() string {
@@ -415,7 +415,7 @@ type AggregateByEventTypeResponse struct {
 
 func (x *AggregateByEventTypeResponse) Reset() {
 	*x = AggregateByEventTypeResponse{}
-	mi := &file_proto_dtako_events_proto_msgTypes[5]
+	mi := &file_dtako_events_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -427,7 +427,7 @@ func (x *AggregateByEventTypeResponse) String() string {
 func (*AggregateByEventTypeResponse) ProtoMessage() {}
 
 func (x *AggregateByEventTypeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[5]
+	mi := &file_dtako_events_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -440,7 +440,7 @@ func (x *AggregateByEventTypeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AggregateByEventTypeResponse.ProtoReflect.Descriptor instead.
 func (*AggregateByEventTypeResponse) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{5}
+	return file_dtako_events_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *AggregateByEventTypeResponse) GetAggregates() []*EventTypeAggregate {
@@ -476,7 +476,7 @@ type EventTypeAggregate struct {
 
 func (x *EventTypeAggregate) Reset() {
 	*x = EventTypeAggregate{}
-	mi := &file_proto_dtako_events_proto_msgTypes[6]
+	mi := &file_dtako_events_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -488,7 +488,7 @@ func (x *EventTypeAggregate) String() string {
 func (*EventTypeAggregate) ProtoMessage() {}
 
 func (x *EventTypeAggregate) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dtako_events_proto_msgTypes[6]
+	mi := &file_dtako_events_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -501,7 +501,7 @@ func (x *EventTypeAggregate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EventTypeAggregate.ProtoReflect.Descriptor instead.
 func (*EventTypeAggregate) Descriptor() ([]byte, []int) {
-	return file_proto_dtako_events_proto_rawDescGZIP(), []int{6}
+	return file_dtako_events_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *EventTypeAggregate) GetEventType() string {
@@ -560,11 +560,11 @@ func (x *EventTypeAggregate) GetAvgMileageDiff() float64 {
 	return 0
 }
 
-var File_proto_dtako_events_proto protoreflect.FileDescriptor
+var File_dtako_events_proto protoreflect.FileDescriptor
 
-const file_proto_dtako_events_proto_rawDesc = "" +
+const file_dtako_events_proto_rawDesc = "" +
 	"\n" +
-	"\x18proto/dtako_events.proto\x12\x05dtako\x1a\x1fgoogle/protobuf/timestamp.proto\"\x83\x05\n" +
+	"\x12dtako_events.proto\x12\x05dtako\x1a\x1fgoogle/protobuf/timestamp.proto\"\x83\x05\n" +
 	"\x05Event\x12\x17\n" +
 	"\asrch_id\x18\x01 \x01(\tR\x06srchId\x12\x1d\n" +
 	"\n" +
@@ -616,26 +616,26 @@ const file_proto_dtako_events_proto_rawDesc = "" +
 	"\x16total_section_distance\x18\x05 \x01(\x01R\x14totalSectionDistance\x120\n" +
 	"\x14avg_section_distance\x18\x06 \x01(\x01R\x12avgSectionDistance\x12,\n" +
 	"\x12total_mileage_diff\x18\a \x01(\x01R\x10totalMileageDiff\x12(\n" +
-	"\x10avg_mileage_diff\x18\b \x01(\x01R\x0eavgMileageDiff2\xec\x01\n" +
-	"\x11DtakoEventService\x120\n" +
-	"\bGetEvent\x12\x16.dtako.GetEventRequest\x1a\f.dtako.Event\x12D\n" +
-	"\vGetByUnkoNo\x12\x19.dtako.GetByUnkoNoRequest\x1a\x1a.dtako.GetByUnkoNoResponse\x12_\n" +
-	"\x14AggregateByEventType\x12\".dtako.AggregateByEventTypeRequest\x1a#.dtako.AggregateByEventTypeResponseB3Z1github.com/yhonda-ohishi/dtako_events/proto;dtakob\x06proto3"
+	"\x10avg_mileage_diff\x18\b \x01(\x01R\x0eavgMileageDiff2\x83\x02\n" +
+	"\x11DtakoEventService\x125\n" +
+	"\rGetDTakoEvent\x12\x16.dtako.GetEventRequest\x1a\f.dtako.Event\x12P\n" +
+	"\x17ListDTakoEventsByUnkoNo\x12\x19.dtako.GetByUnkoNoRequest\x1a\x1a.dtako.GetByUnkoNoResponse\x12e\n" +
+	"\x1aAggregateDTakoEventsByType\x12\".dtako.AggregateByEventTypeRequest\x1a#.dtako.AggregateByEventTypeResponseB3Z1github.com/yhonda-ohishi/dtako_events/proto;dtakob\x06proto3"
 
 var (
-	file_proto_dtako_events_proto_rawDescOnce sync.Once
-	file_proto_dtako_events_proto_rawDescData []byte
+	file_dtako_events_proto_rawDescOnce sync.Once
+	file_dtako_events_proto_rawDescData []byte
 )
 
-func file_proto_dtako_events_proto_rawDescGZIP() []byte {
-	file_proto_dtako_events_proto_rawDescOnce.Do(func() {
-		file_proto_dtako_events_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_dtako_events_proto_rawDesc), len(file_proto_dtako_events_proto_rawDesc)))
+func file_dtako_events_proto_rawDescGZIP() []byte {
+	file_dtako_events_proto_rawDescOnce.Do(func() {
+		file_dtako_events_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_dtako_events_proto_rawDesc), len(file_dtako_events_proto_rawDesc)))
 	})
-	return file_proto_dtako_events_proto_rawDescData
+	return file_dtako_events_proto_rawDescData
 }
 
-var file_proto_dtako_events_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
-var file_proto_dtako_events_proto_goTypes = []any{
+var file_dtako_events_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_dtako_events_proto_goTypes = []any{
 	(*Event)(nil),                        // 0: dtako.Event
 	(*GetEventRequest)(nil),              // 1: dtako.GetEventRequest
 	(*GetByUnkoNoRequest)(nil),           // 2: dtako.GetByUnkoNoRequest
@@ -645,7 +645,7 @@ var file_proto_dtako_events_proto_goTypes = []any{
 	(*EventTypeAggregate)(nil),           // 6: dtako.EventTypeAggregate
 	(*timestamppb.Timestamp)(nil),        // 7: google.protobuf.Timestamp
 }
-var file_proto_dtako_events_proto_depIdxs = []int32{
+var file_dtako_events_proto_depIdxs = []int32{
 	7,  // 0: dtako.Event.start_datetime:type_name -> google.protobuf.Timestamp
 	7,  // 1: dtako.Event.end_datetime:type_name -> google.protobuf.Timestamp
 	7,  // 2: dtako.Event.created_at:type_name -> google.protobuf.Timestamp
@@ -657,12 +657,12 @@ var file_proto_dtako_events_proto_depIdxs = []int32{
 	7,  // 8: dtako.AggregateByEventTypeRequest.end_time:type_name -> google.protobuf.Timestamp
 	6,  // 9: dtako.AggregateByEventTypeResponse.aggregates:type_name -> dtako.EventTypeAggregate
 	6,  // 10: dtako.AggregateByEventTypeResponse.total:type_name -> dtako.EventTypeAggregate
-	1,  // 11: dtako.DtakoEventService.GetEvent:input_type -> dtako.GetEventRequest
-	2,  // 12: dtako.DtakoEventService.GetByUnkoNo:input_type -> dtako.GetByUnkoNoRequest
-	4,  // 13: dtako.DtakoEventService.AggregateByEventType:input_type -> dtako.AggregateByEventTypeRequest
-	0,  // 14: dtako.DtakoEventService.GetEvent:output_type -> dtako.Event
-	3,  // 15: dtako.DtakoEventService.GetByUnkoNo:output_type -> dtako.GetByUnkoNoResponse
-	5,  // 16: dtako.DtakoEventService.AggregateByEventType:output_type -> dtako.AggregateByEventTypeResponse
+	1,  // 11: dtako.DtakoEventService.GetDTakoEvent:input_type -> dtako.GetEventRequest
+	2,  // 12: dtako.DtakoEventService.ListDTakoEventsByUnkoNo:input_type -> dtako.GetByUnkoNoRequest
+	4,  // 13: dtako.DtakoEventService.AggregateDTakoEventsByType:input_type -> dtako.AggregateByEventTypeRequest
+	0,  // 14: dtako.DtakoEventService.GetDTakoEvent:output_type -> dtako.Event
+	3,  // 15: dtako.DtakoEventService.ListDTakoEventsByUnkoNo:output_type -> dtako.GetByUnkoNoResponse
+	5,  // 16: dtako.DtakoEventService.AggregateDTakoEventsByType:output_type -> dtako.AggregateByEventTypeResponse
 	14, // [14:17] is the sub-list for method output_type
 	11, // [11:14] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name
@@ -670,26 +670,26 @@ var file_proto_dtako_events_proto_depIdxs = []int32{
 	0,  // [0:11] is the sub-list for field type_name
 }
 
-func init() { file_proto_dtako_events_proto_init() }
-func file_proto_dtako_events_proto_init() {
-	if File_proto_dtako_events_proto != nil {
+func init() { file_dtako_events_proto_init() }
+func file_dtako_events_proto_init() {
+	if File_dtako_events_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_dtako_events_proto_rawDesc), len(file_proto_dtako_events_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dtako_events_proto_rawDesc), len(file_dtako_events_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_dtako_events_proto_goTypes,
-		DependencyIndexes: file_proto_dtako_events_proto_depIdxs,
-		MessageInfos:      file_proto_dtako_events_proto_msgTypes,
+		GoTypes:           file_dtako_events_proto_goTypes,
+		DependencyIndexes: file_dtako_events_proto_depIdxs,
+		MessageInfos:      file_dtako_events_proto_msgTypes,
 	}.Build()
-	File_proto_dtako_events_proto = out.File
-	file_proto_dtako_events_proto_goTypes = nil
-	file_proto_dtako_events_proto_depIdxs = nil
+	File_dtako_events_proto = out.File
+	file_dtako_events_proto_goTypes = nil
+	file_dtako_events_proto_depIdxs = nil
 }
