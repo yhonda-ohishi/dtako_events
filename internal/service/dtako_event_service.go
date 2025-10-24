@@ -49,19 +49,29 @@ func (s *DtakoEventService) GetEvent(ctx context.Context, req *pb.GetEventReques
 
 // GetByUnkoNo 運行NO指定でイベント一覧取得
 func (s *DtakoEventService) GetByUnkoNo(ctx context.Context, req *pb.GetByUnkoNoRequest) (*pb.GetByUnkoNoResponse, error) {
-	// db_serviceから取得
+	// タイムスタンプをRFC3339文字列に変換
+	var startTimeStr, endTimeStr string
+	if req.StartTime != nil {
+		startTimeStr = req.StartTime.AsTime().Format(time.RFC3339)
+	}
+	if req.EndTime != nil {
+		endTimeStr = req.EndTime.AsTime().Format(time.RFC3339)
+	}
+
+	// db_serviceから取得（DB側でフィルタリング）
 	resp, err := s.dbEventsClient.GetByOperationNo(ctx, &dbpb.Db_GetDTakoEventsByOperationNoRequest{
 		OperationNo: req.UnkoNo,
+		EventTypes:  req.EventTypes,
+		StartTime:   startTimeStr,
+		EndTime:     endTimeStr,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to get events from db_service: %w", err)
 	}
 
-	// 時刻フィルタリング（クライアント側）
-	events := filterEventsByTime(resp.Items, req.StartTime, req.EndTime)
-
-	pbEvents := make([]*pb.Event, len(events))
-	for i, event := range events {
+	// DB側でフィルタ済みのため、変換のみ
+	pbEvents := make([]*pb.Event, len(resp.Items))
+	for i, event := range resp.Items {
 		pbEvents[i] = convertDBEventToProto(event)
 	}
 
