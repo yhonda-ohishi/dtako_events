@@ -18,6 +18,14 @@ type DtakoEventService struct {
 	dbEventsClient dbpb.Db_DTakoEventsServiceClient
 }
 
+// NewDtakoEventServiceWithClient 既存のdb_serviceクライアントを使ってサービスを作成
+// desktop-serverなど、既にdb_serviceクライアントが存在する環境で使用
+func NewDtakoEventServiceWithClient(dbClient dbpb.Db_DTakoEventsServiceClient) *DtakoEventService {
+	return &DtakoEventService{
+		dbEventsClient: dbClient,
+	}
+}
+
 // NewDtakoEventService サービスを作成
 // db_serviceに接続（同一プロセス内またはローカルホスト）
 func NewDtakoEventService() *DtakoEventService {
